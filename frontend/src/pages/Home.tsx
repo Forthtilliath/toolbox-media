@@ -7,6 +7,11 @@ const tools = [
     label: 'Uniformiser teintes',
     description: "Aligner les couleurs d'un groupe de photos sur une référence",
   },
+  {
+    to: '/brightness-match',
+    label: 'Uniformiser luminosité',
+    description: "Égaliser la luminosité d'un groupe de photos (moyenne du lot ou référence)",
+  },
   { to: '/compress-image', label: 'Compresser image', description: "Réduire le poids d'une image" },
   { to: '/convert-image', label: 'Convertir image', description: "Changer le format d'une image" },
   { to: '/trim-video', label: 'Couper vidéo', description: "Extraire un passage d'une vidéo" },

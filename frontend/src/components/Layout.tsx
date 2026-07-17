@@ -5,6 +5,7 @@ const links = [
   { to: '/', label: 'Accueil', end: true },
   { to: '/remove-background', label: 'Remove BG' },
   { to: '/color-match', label: 'Uniformiser teintes' },
+  { to: '/brightness-match', label: 'Uniformiser luminosité' },
   { to: '/compress-image', label: 'Compresser image' },
   { to: '/convert-image', label: 'Convertir image' },
   { to: '/trim-video', label: 'Couper vidéo' },

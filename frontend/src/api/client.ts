@@ -43,6 +43,12 @@ export const api = {
     images.forEach((image) => formData.append('images', image))
     return requestFile('/images/color-match', formData)
   },
+  normalizeBrightness: (images: File[], reference: File | null) => {
+    const formData = new FormData()
+    images.forEach((image) => formData.append('images', image))
+    if (reference) formData.append('reference', reference)
+    return requestFile('/images/normalize-brightness', formData)
+  },
   trimVideo: (video: File, start: number, end: number) => {
     const formData = new FormData()
     formData.append('video', video)

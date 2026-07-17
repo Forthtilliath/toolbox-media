@@ -2,6 +2,7 @@ import io
 
 import numpy as np
 from PIL import Image
+from skimage.color import lab2rgb, rgb2lab
 from skimage.exposure import match_histograms
 
 FORMAT_MEDIA_TYPES = {
@@ -50,3 +51,40 @@ def match_colors(reference_bytes: bytes, image_bytes: bytes) -> bytes:
     matched_image.save(output, format=original_format)
     output.seek(0)
     return output.getvalue()
+
+
+def _mean_luminance(rgb: np.ndarray) -> float:
+    return float(rgb2lab(rgb / 255.0)[:, :, 0].mean())
+
+
+def _shift_luminance(rgb: np.ndarray, delta: float) -> np.ndarray:
+    lab = rgb2lab(rgb / 255.0)
+    lab[:, :, 0] = np.clip(lab[:, :, 0] + delta, 0, 100)
+    shifted = np.clip(lab2rgb(lab) * 255.0, 0, 255)
+    return shifted.astype(np.uint8)
+
+
+def normalize_brightness(images_bytes: list[bytes], reference_bytes: bytes | None) -> list[bytes]:
+    # Shifting only the LAB L channel (luminance) keeps hue/saturation untouched, unlike
+    # match_colors' full histogram match which reshapes the whole color distribution.
+    decoded = []
+    for data in images_bytes:
+        image = Image.open(io.BytesIO(data))
+        original_format = image.format or "PNG"
+        decoded.append((np.array(image.convert("RGB")), original_format))
+
+    means = [_mean_luminance(rgb) for rgb, _ in decoded]
+    if reference_bytes is not None:
+        reference_rgb = np.array(Image.open(io.BytesIO(reference_bytes)).convert("RGB"))
+        target = _mean_luminance(reference_rgb)
+    else:
+        target = sum(means) / len(means)
+
+    results = []
+    for (rgb, fmt), mean in zip(decoded, means):
+        adjusted = _shift_luminance(rgb, target - mean)
+        output = io.BytesIO()
+        Image.fromarray(adjusted).save(output, format=fmt)
+        output.seek(0)
+        results.append(output.getvalue())
+    return results

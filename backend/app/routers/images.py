@@ -5,7 +5,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 from PIL import UnidentifiedImageError
 
-from app.services.image_processing import compress_image, convert_image, match_colors
+from app.services.image_processing import compress_image, convert_image, match_colors, normalize_brightness
 
 router = APIRouter()
 
@@ -49,4 +49,27 @@ async def color_match(
         zip_buffer,
         media_type="application/zip",
         headers={"Content-Disposition": "attachment; filename=matched_images.zip"},
+    )
+
+
+@router.post("/normalize-brightness")
+async def normalize_brightness_endpoint(
+    images: list[UploadFile] = File(...), reference: UploadFile | None = File(None)
+) -> StreamingResponse:
+    filenames = [img.filename or f"image_{i}.png" for i, img in enumerate(images)]
+    images_bytes = [await img.read() for img in images]
+    reference_bytes = await reference.read() if reference is not None else None
+    try:
+        results = normalize_brightness(images_bytes, reference_bytes)
+    except UnidentifiedImageError:
+        raise HTTPException(status_code=400, detail="Fichier image invalide")
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        for filename, data in zip(filenames, results):
+            zip_file.writestr(filename, data)
+    zip_buffer.seek(0)
+    return StreamingResponse(
+        zip_buffer,
+        media_type="application/zip",
+        headers={"Content-Disposition": "attachment; filename=normalized_images.zip"},
     )
