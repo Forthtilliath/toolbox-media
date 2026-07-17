@@ -20,6 +20,8 @@ const links = [
   { to: '/spritesheet', label: 'Spritesheet CSS' },
   { to: '/svg-optimize', label: 'Optimiser SVG' },
   { to: '/svg-convert', label: 'Convertir SVG/PNG' },
+  { to: '/color-palette', label: 'Palette de couleurs' },
+  { to: '/compare-images', label: 'Comparer deux images' },
   { to: '/trim-video', label: 'Couper vidéo' },
   { to: '/video-to-gif', label: 'Vidéo -> GIF' },
 ]

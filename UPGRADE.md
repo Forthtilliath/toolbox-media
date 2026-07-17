@@ -24,8 +24,8 @@ Idées d'outils supplémentaires pour la toolbox, en plus des 6 outils déjà im
 
 ## Images — analyse
 
-- [ ] Extraire la palette de couleurs dominante d'une image
-- [ ] Comparer deux images (diff visuel, utile pour de la review de design)
+- [x] Extraire la palette de couleurs dominante d'une image
+- [x] Comparer deux images (diff visuel, utile pour de la review de design)
 
 ## Vidéo
 

@@ -66,6 +66,16 @@ const tools = [
     label: 'Convertir SVG/PNG',
     description: 'Rasteriser un SVG en PNG, ou encapsuler un PNG dans un SVG',
   },
+  {
+    to: '/color-palette',
+    label: 'Palette de couleurs',
+    description: "Extraire les couleurs dominantes d'une image",
+  },
+  {
+    to: '/compare-images',
+    label: 'Comparer deux images',
+    description: 'Score de similarité + heatmap des différences',
+  },
   { to: '/trim-video', label: 'Couper vidéo', description: "Extraire un passage d'une vidéo" },
   { to: '/video-to-gif', label: 'Vidéo -> GIF', description: 'Transformer un extrait vidéo en GIF' },
 ]

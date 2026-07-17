@@ -160,6 +160,21 @@ export const api = {
     if (width !== undefined) formData.append('width', String(width))
     return requestFile('/svg/convert', formData)
   },
+  colorPalette: (image: File, numColors: number) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    formData.append('num_colors', String(numColors))
+    return requestJson<{ colors: { hex: string; rgb: number[]; percentage: number }[] }>(
+      '/analysis/palette',
+      formData,
+    )
+  },
+  compareImages: (imageA: File, imageB: File) => {
+    const formData = new FormData()
+    formData.append('image_a', imageA)
+    formData.append('image_b', imageB)
+    return requestJson<{ data_uri: string; similarity: number }>('/analysis/compare', formData)
+  },
   trimVideo: (video: File, start: number, end: number) => {
     const formData = new FormData()
     formData.append('video', video)
