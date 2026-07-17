@@ -22,6 +22,11 @@ import ColorPalette from './pages/ColorPalette'
 import CompareImages from './pages/CompareImages'
 import TrimVideo from './pages/TrimVideo'
 import VideoToGif from './pages/VideoToGif'
+import ConvertVideo from './pages/ConvertVideo'
+import CompressVideo from './pages/CompressVideo'
+import ExtractFrame from './pages/ExtractFrame'
+import ConcatVideos from './pages/ConcatVideos'
+import AudioTrack from './pages/AudioTrack'
 
 function App() {
   return (
@@ -49,6 +54,11 @@ function App() {
         <Route path="/compare-images" element={<CompareImages />} />
         <Route path="/trim-video" element={<TrimVideo />} />
         <Route path="/video-to-gif" element={<VideoToGif />} />
+        <Route path="/convert-video" element={<ConvertVideo />} />
+        <Route path="/compress-video" element={<CompressVideo />} />
+        <Route path="/extract-frame" element={<ExtractFrame />} />
+        <Route path="/concat-videos" element={<ConcatVideos />} />
+        <Route path="/audio-track" element={<AudioTrack />} />
       </Routes>
     </Layout>
   )

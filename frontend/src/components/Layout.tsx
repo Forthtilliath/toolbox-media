@@ -24,6 +24,11 @@ const links = [
   { to: '/compare-images', label: 'Comparer deux images' },
   { to: '/trim-video', label: 'Couper vidéo' },
   { to: '/video-to-gif', label: 'Vidéo -> GIF' },
+  { to: '/convert-video', label: 'Convertir vidéo' },
+  { to: '/compress-video', label: 'Compresser vidéo' },
+  { to: '/extract-frame', label: 'Extraire une frame' },
+  { to: '/concat-videos', label: 'Concaténer vidéos' },
+  { to: '/audio-track', label: 'Piste audio' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {

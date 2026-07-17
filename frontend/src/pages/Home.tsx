@@ -78,6 +78,27 @@ const tools = [
   },
   { to: '/trim-video', label: 'Couper vidéo', description: "Extraire un passage d'une vidéo" },
   { to: '/video-to-gif', label: 'Vidéo -> GIF', description: 'Transformer un extrait vidéo en GIF' },
+  { to: '/convert-video', label: 'Convertir vidéo', description: 'Changer le format (mp4, webm, mov, mkv, avi)' },
+  {
+    to: '/compress-video',
+    label: 'Compresser vidéo',
+    description: 'Réduire le poids via un bitrate et/ou une largeur cible',
+  },
+  {
+    to: '/extract-frame',
+    label: 'Extraire une frame',
+    description: 'Récupérer une image fixe à un instant donné',
+  },
+  {
+    to: '/concat-videos',
+    label: 'Concaténer vidéos',
+    description: 'Mettre bout à bout plusieurs extraits (résolution normalisée automatiquement)',
+  },
+  {
+    to: '/audio-track',
+    label: 'Piste audio',
+    description: 'Retirer la piste audio, ou la remplacer par un autre fichier',
+  },
 ]
 
 export default function Home() {

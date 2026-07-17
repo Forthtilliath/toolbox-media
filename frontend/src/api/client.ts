@@ -191,4 +191,35 @@ export const api = {
     formData.append('width', String(width))
     return requestFile('/videos/to-gif', formData)
   },
+  convertVideo: (video: File, targetFormat: string) => {
+    const formData = new FormData()
+    formData.append('video', video)
+    formData.append('target_format', targetFormat)
+    return requestFile('/videos/convert', formData)
+  },
+  compressVideo: (video: File, bitrateKbps?: number, width?: number) => {
+    const formData = new FormData()
+    formData.append('video', video)
+    if (bitrateKbps !== undefined) formData.append('bitrate_kbps', String(bitrateKbps))
+    if (width !== undefined) formData.append('width', String(width))
+    return requestFile('/videos/compress', formData)
+  },
+  extractFrame: (video: File, timestamp: number) => {
+    const formData = new FormData()
+    formData.append('video', video)
+    formData.append('timestamp', String(timestamp))
+    return requestFile('/videos/extract-frame', formData)
+  },
+  concatVideos: (videos: File[]) => {
+    const formData = new FormData()
+    videos.forEach((video) => formData.append('videos', video))
+    return requestFile('/videos/concat', formData)
+  },
+  audioTrack: (video: File, action: 'remove' | 'replace', audio?: File) => {
+    const formData = new FormData()
+    formData.append('video', video)
+    formData.append('action', action)
+    if (audio) formData.append('audio', audio)
+    return requestFile('/videos/audio-track', formData)
+  },
 }

@@ -29,11 +29,11 @@ Idées d'outils supplémentaires pour la toolbox, en plus des 6 outils déjà im
 
 ## Vidéo
 
-- [ ] Convertir un format vidéo (mp4 ↔ webm, etc.)
-- [ ] Compresser une vidéo (ajuster bitrate/résolution cible)
-- [ ] Extraire une frame/thumbnail à un timestamp donné
-- [ ] Concaténer plusieurs extraits vidéo bout à bout
-- [ ] Ajouter/retirer la piste audio d'une vidéo
+- [x] Convertir un format vidéo (mp4 ↔ webm, etc.)
+- [x] Compresser une vidéo (ajuster bitrate/résolution cible)
+- [x] Extraire une frame/thumbnail à un timestamp donné
+- [x] Concaténer plusieurs extraits vidéo bout à bout
+- [x] Ajouter/retirer la piste audio d'une vidéo
 
 ## Divers
 
