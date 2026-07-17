@@ -106,3 +106,37 @@ def pdf_bytes(jpeg_bytes, png_rgba_bytes):
     output = io.BytesIO()
     page1.save(output, format="PDF", save_all=True, append_images=[page2])
     return output.getvalue()
+
+
+@pytest.fixture
+def jpeg_with_exif_bytes():
+    image = Image.new("RGB", (120, 80), (150, 150, 150))
+    exif = image.getexif()
+    exif[271] = "Apple"  # Make
+    exif[272] = "iPhone 15 Pro"  # Model
+    exif[306] = "2024:06:15 10:30:00"  # DateTime
+    output = io.BytesIO()
+    image.save(output, format="JPEG", exif=exif)
+    return output.getvalue()
+
+
+@pytest.fixture
+def tilted_jpeg_bytes():
+    # A dark block rotated 12° on a light background — deskew should bring it back to ~0°.
+    base = Image.new("RGB", (300, 300), (250, 250, 250))
+    block = Image.new("RGB", (150, 80), (20, 20, 20))
+    rotated = block.rotate(12, expand=True, fillcolor=(250, 250, 250))
+    base.paste(rotated, (75, 110))
+    output = io.BytesIO()
+    base.save(output, format="JPEG", quality=95)
+    return output.getvalue()
+
+
+@pytest.fixture
+def heic_bytes():
+    # app.main (imported above) already ran pillow_heif.register_heif_opener(),
+    # so Pillow can both read and write "HEIF" here.
+    image = Image.new("RGB", (100, 80), (180, 90, 60))
+    output = io.BytesIO()
+    image.save(output, format="HEIF")
+    return output.getvalue()

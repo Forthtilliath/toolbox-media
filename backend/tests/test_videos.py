@@ -133,3 +133,92 @@ def test_audio_track_invalid_action(client, video_clip_bytes):
         data={"action": "bogus"},
     )
     assert response.status_code == 400
+
+
+def test_extract_audio_mp3(client, video_clip_bytes):
+    response = client.post(
+        "/api/videos/extract-audio",
+        files={"video": ("clip.mp4", video_clip_bytes, "video/mp4")},
+        data={"target_format": "mp3"},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "audio/mp3"
+
+
+def test_extract_audio_wav(client, video_clip_bytes):
+    response = client.post(
+        "/api/videos/extract-audio",
+        files={"video": ("clip.mp4", video_clip_bytes, "video/mp4")},
+        data={"target_format": "wav"},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "audio/wav"
+
+
+def test_extract_audio_invalid_format(client, video_clip_bytes):
+    response = client.post(
+        "/api/videos/extract-audio",
+        files={"video": ("clip.mp4", video_clip_bytes, "video/mp4")},
+        data={"target_format": "bogus"},
+    )
+    assert response.status_code == 400
+
+
+def test_speed_up(client, video_clip_bytes):
+    response = client.post(
+        "/api/videos/speed",
+        files={"video": ("clip.mp4", video_clip_bytes, "video/mp4")},
+        data={"speed": "1.5"},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "video/mp4"
+
+
+def test_speed_out_of_range(client, video_clip_bytes):
+    response = client.post(
+        "/api/videos/speed",
+        files={"video": ("clip.mp4", video_clip_bytes, "video/mp4")},
+        data={"speed": "3.0"},
+    )
+    assert response.status_code == 400
+
+
+def test_subtitles(client, video_clip_bytes):
+    srt = b"1\n00:00:00,000 --> 00:00:01,000\nHello\n"
+    response = client.post(
+        "/api/videos/subtitles",
+        files={
+            "video": ("clip.mp4", video_clip_bytes, "video/mp4"),
+            "srt": ("subs.srt", srt, "text/plain"),
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "video/mp4"
+
+
+def test_loop(client, video_clip_bytes):
+    response = client.post(
+        "/api/videos/loop",
+        files={"video": ("clip.mp4", video_clip_bytes, "video/mp4")},
+        data={"fade_duration": "0.5"},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "video/mp4"
+
+
+def test_waveform(client, video_clip_bytes):
+    response = client.post(
+        "/api/videos/waveform",
+        files={"video": ("clip.mp4", video_clip_bytes, "video/mp4")},
+        data={"width": "640", "height": "120"},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/png"
+
+
+def test_waveform_no_audio(client, video_no_audio_bytes):
+    response = client.post(
+        "/api/videos/waveform",
+        files={"video": ("silent.mp4", video_no_audio_bytes, "video/mp4")},
+    )
+    assert response.status_code == 400

@@ -1,5 +1,8 @@
+import hashlib
 import io
 import zipfile
+
+import fitz
 
 
 def test_qrcode(client):
@@ -69,3 +72,86 @@ def test_rename_collision_gets_disambiguated(client, jpeg_bytes, png_rgba_bytes)
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content))
     assert set(zf.namelist()) == {"cover.jpg", "cover-2.jpg"}
+
+
+def test_merge_pdf(client, pdf_bytes):
+    # pdf_bytes already has 2 pages; merging two copies should yield 4.
+    response = client.post(
+        "/api/misc/merge-pdf",
+        files=[
+            ("files", ("a.pdf", pdf_bytes, "application/pdf")),
+            ("files", ("b.pdf", pdf_bytes, "application/pdf")),
+        ],
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/pdf"
+    doc = fitz.open(stream=response.content, filetype="pdf")
+    try:
+        assert doc.page_count == 4
+    finally:
+        doc.close()
+
+
+def test_merge_pdf_single_file(client, pdf_bytes):
+    response = client.post(
+        "/api/misc/merge-pdf",
+        files=[("files", ("a.pdf", pdf_bytes, "application/pdf"))],
+    )
+    assert response.status_code == 400
+
+
+def test_compress_pdf(client, pdf_bytes):
+    response = client.post(
+        "/api/misc/compress-pdf",
+        files={"file": ("doc.pdf", pdf_bytes, "application/pdf")},
+    )
+    assert response.status_code == 200
+    assert response.content.startswith(b"%PDF")
+
+
+def test_compress_pdf_invalid(client):
+    response = client.post(
+        "/api/misc/compress-pdf",
+        files={"file": ("bad.pdf", b"not a pdf", "application/pdf")},
+    )
+    assert response.status_code == 400
+
+
+def test_hash(client):
+    data = b"hello toolbox"
+    response = client.post(
+        "/api/misc/hash",
+        files={"file": ("test.txt", data, "text/plain")},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["md5"] == hashlib.md5(data).hexdigest()
+    assert body["sha256"] == hashlib.sha256(data).hexdigest()
+
+
+def test_contrast_black_white(client):
+    response = client.post(
+        "/api/misc/contrast",
+        data={"color_a": "000000", "color_b": "ffffff"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ratio"] == 21.0
+    assert body["aaa_normal_text"] is True
+
+
+def test_contrast_low(client):
+    response = client.post(
+        "/api/misc/contrast",
+        data={"color_a": "888888", "color_b": "999999"},
+    )
+    assert response.status_code == 200
+    assert response.json()["aa_normal_text"] is False
+
+
+def test_contrast_invalid_color(client):
+    response = client.post(
+        "/api/misc/contrast",
+        data={"color_a": "notacolor", "color_b": "ffffff"},
+    )
+    assert response.status_code == 400

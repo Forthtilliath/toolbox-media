@@ -44,6 +44,17 @@ def test_convert_to_avif(client, jpeg_bytes):
     assert response.headers["content-type"] == "image/avif"
 
 
+def test_convert_heic_to_jpeg(client, heic_bytes):
+    response = client.post(
+        "/api/images/convert",
+        files={"image": ("photo.heic", heic_bytes, "image/heic")},
+        data={"target_format": "jpeg"},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/jpeg"
+    assert Image.open(io.BytesIO(response.content)).format == "JPEG"
+
+
 def test_color_match(client, jpeg_bytes, png_rgba_bytes):
     response = client.post(
         "/api/images/color-match",

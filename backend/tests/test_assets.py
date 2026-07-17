@@ -1,6 +1,8 @@
 import io
 import zipfile
 
+from PIL import Image
+
 
 def test_favicon(client, small_icon_bytes):
     response = client.post(
@@ -80,3 +82,48 @@ def test_spritesheet(client, small_icon_bytes, png_rgba_bytes):
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content))
     assert set(zf.namelist()) == {"sprite.png", "sprite.css"}
+
+
+def test_social_formats(client, jpeg_bytes):
+    response = client.post(
+        "/api/assets/social-formats",
+        files={"image": ("photo.jpg", jpeg_bytes, "image/jpeg")},
+    )
+    assert response.status_code == 200
+    zf = zipfile.ZipFile(io.BytesIO(response.content))
+    assert set(zf.namelist()) == {
+        "instagram-square.jpg",
+        "instagram-story.jpg",
+        "linkedin-banner.jpg",
+        "twitter-card.jpg",
+        "og-image.jpg",
+    }
+    assert Image.open(io.BytesIO(zf.read("instagram-square.jpg"))).size == (1080, 1080)
+    assert Image.open(io.BytesIO(zf.read("linkedin-banner.jpg"))).size == (1584, 396)
+
+
+def test_placeholder_default_size(client):
+    response = client.post(
+        "/api/assets/placeholder",
+        data={"width": "300", "height": "200"},
+    )
+    assert response.status_code == 200
+    assert Image.open(io.BytesIO(response.content)).size == (300, 200)
+
+
+def test_placeholder_custom_colors(client):
+    response = client.post(
+        "/api/assets/placeholder",
+        data={"width": "100", "height": "100", "bg_color": "1e3a8a", "text_color": "ffffff"},
+    )
+    assert response.status_code == 200
+    image = Image.open(io.BytesIO(response.content)).convert("RGB")
+    assert image.getpixel((2, 2)) == (30, 58, 138)
+
+
+def test_placeholder_invalid_color(client):
+    response = client.post(
+        "/api/assets/placeholder",
+        data={"bg_color": "notacolor"},
+    )
+    assert response.status_code == 400
