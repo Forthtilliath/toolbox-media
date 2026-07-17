@@ -17,13 +17,13 @@ Idées d'outils supplémentaires pour la toolbox.
 
 ## Images — avancé
 
-- [ ] Supprimer les métadonnées EXIF d'une image (vie privée avant partage)
-- [ ] Extraire les métadonnées EXIF (date, appareil, position GPS...)
-- [ ] Convertir HEIC/HEIF (photos iPhone) vers JPEG/PNG
-- [ ] Redresser une image (correction de perspective / inclinaison)
-- [ ] Réduire le bruit d'une image (denoise)
-- [ ] Générer une planche contact (grille de miniatures à partir d'un lot de photos)
-- [ ] Détourage précis avec alpha matting (bords fins : cheveux, fourrure...)
+- [x] Supprimer les métadonnées EXIF d'une image (vie privée avant partage)
+- [x] Extraire les métadonnées EXIF (date, appareil, position GPS...)
+- [x] Convertir HEIC/HEIF (photos iPhone) vers JPEG/PNG — support ajouté à l'outil "Convertir" existant
+- [x] Redresser une image (correction d'inclinaison, auto-détectée via OpenCV — pas de correction de perspective manuelle à 4 points)
+- [x] Réduire le bruit d'une image (denoise, Non-Local Means via OpenCV)
+- [x] Générer une planche contact (grille de miniatures à partir d'un lot de photos)
+- [x] Détourage précis avec alpha matting (bords fins : cheveux, fourrure...) — option ajoutée à l'outil "Remove BG" existant
 
 ## Images — réseaux sociaux
 

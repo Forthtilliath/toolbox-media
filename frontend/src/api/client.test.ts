@@ -39,17 +39,17 @@ beforeEach(() => {
 describe('error handling', () => {
   it('surfaces the server-provided JSON detail message', async () => {
     mockFetchError(400, JSON.stringify({ detail: 'Fichier image invalide' }))
-    await expect(api.removeBackground(file())).rejects.toThrow('Fichier image invalide')
+    await expect(api.removeBackground(file(), false)).rejects.toThrow('Fichier image invalide')
   })
 
   it('falls back to the raw response body when it is not JSON', async () => {
     mockFetchError(502, '<html>Bad Gateway</html>')
-    await expect(api.removeBackground(file())).rejects.toThrow('<html>Bad Gateway</html>')
+    await expect(api.removeBackground(file(), false)).rejects.toThrow('<html>Bad Gateway</html>')
   })
 
   it('falls back to a generic message when the body is empty', async () => {
     mockFetchError(500, '')
-    await expect(api.removeBackground(file())).rejects.toThrow('Erreur 500')
+    await expect(api.removeBackground(file(), false)).rejects.toThrow('Erreur 500')
   })
 })
 
@@ -57,10 +57,18 @@ describe('background', () => {
   it('removeBackground posts to /background/remove', async () => {
     mockFetchOk()
     const f = file()
-    await api.removeBackground(f)
+    await api.removeBackground(f, false)
     const { url, formData } = lastCall()
     expect(url).toBe('/api/background/remove')
     expect(formData.get('image')).toBe(f)
+    expect(formData.get('alpha_matting')).toBe('false')
+  })
+
+  it('removeBackground sends alpha_matting=true when enabled', async () => {
+    mockFetchOk()
+    await api.removeBackground(file(), true)
+    const { formData } = lastCall()
+    expect(formData.get('alpha_matting')).toBe('true')
   })
 })
 
@@ -176,6 +184,50 @@ describe('images', () => {
     expect(formData.getAll('images')).toEqual([a, b])
     expect(formData.get('brightness')).toBe('1.2')
     expect(formData.get('saturation')).toBe('0.8')
+  })
+})
+
+describe('advanced', () => {
+  it('stripExif posts to /advanced/strip-exif', async () => {
+    mockFetchOk()
+    const f = file()
+    await api.stripExif(f)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/advanced/strip-exif')
+    expect(formData.get('image')).toBe(f)
+  })
+
+  it('extractExif parses the metadata object', async () => {
+    mockFetchOk({ metadata: { Make: 'Apple', GPSDecimal: { latitude: 1, longitude: 2 } } })
+    const result = await api.extractExif(file())
+    expect(lastCall().url).toBe('/api/advanced/extract-exif')
+    expect(result.metadata.Make).toBe('Apple')
+  })
+
+  it('deskewImage posts to /advanced/deskew', async () => {
+    mockFetchOk()
+    await api.deskewImage(file())
+    expect(lastCall().url).toBe('/api/advanced/deskew')
+  })
+
+  it('denoiseImage sends the strength', async () => {
+    mockFetchOk()
+    await api.denoiseImage(file(), 15)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/advanced/denoise')
+    expect(formData.get('strength')).toBe('15')
+  })
+
+  it('contactSheet sends every image plus columns and thumb size', async () => {
+    mockFetchOk()
+    const a = file('a.jpg')
+    const b = file('b.jpg')
+    await api.contactSheet([a, b], 3, 150)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/advanced/contact-sheet')
+    expect(formData.getAll('images')).toEqual([a, b])
+    expect(formData.get('columns')).toBe('3')
+    expect(formData.get('thumb_size')).toBe('150')
   })
 })
 

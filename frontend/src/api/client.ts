@@ -35,9 +35,10 @@ async function requestJson<T>(path: string, formData: FormData): Promise<T> {
 }
 
 export const api = {
-  removeBackground: (image: File) => {
+  removeBackground: (image: File, alphaMatting: boolean) => {
     const formData = new FormData()
     formData.append('image', image)
+    formData.append('alpha_matting', String(alphaMatting))
     return requestFile('/background/remove', formData)
   },
   compressImage: (image: File, quality: number) => {
@@ -174,6 +175,34 @@ export const api = {
     formData.append('image_a', imageA)
     formData.append('image_b', imageB)
     return requestJson<{ data_uri: string; similarity: number }>('/analysis/compare', formData)
+  },
+  stripExif: (image: File) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    return requestFile('/advanced/strip-exif', formData)
+  },
+  extractExif: (image: File) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    return requestJson<{ metadata: Record<string, unknown> }>('/advanced/extract-exif', formData)
+  },
+  deskewImage: (image: File) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    return requestFile('/advanced/deskew', formData)
+  },
+  denoiseImage: (image: File, strength: number) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    formData.append('strength', String(strength))
+    return requestFile('/advanced/denoise', formData)
+  },
+  contactSheet: (images: File[], columns: number, thumbSize: number) => {
+    const formData = new FormData()
+    images.forEach((image) => formData.append('images', image))
+    formData.append('columns', String(columns))
+    formData.append('thumb_size', String(thumbSize))
+    return requestFile('/advanced/contact-sheet', formData)
   },
   trimVideo: (video: File, start: number, end: number) => {
     const formData = new FormData()

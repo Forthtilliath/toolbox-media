@@ -1,11 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
-import ResultPanel from '../components/ResultPanel'
 
-export default function RemoveBackground() {
+export default function ExtractExif() {
   const [file, setFile] = useState<File | null>(null)
-  const [alphaMatting, setAlphaMatting] = useState(false)
-  const [result, setResult] = useState<Blob | null>(null)
+  const [metadata, setMetadata] = useState<Record<string, unknown> | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -15,8 +13,8 @@ export default function RemoveBackground() {
     setLoading(true)
     setError(null)
     try {
-      const blob = await api.removeBackground(file, alphaMatting)
-      setResult(blob)
+      const { metadata } = await api.extractExif(file)
+      setMetadata(metadata)
     } catch (err) {
       setError((err as Error).message)
     } finally {
@@ -26,23 +24,23 @@ export default function RemoveBackground() {
 
   return (
     <section>
-      <h2>Remove background</h2>
+      <h2>Extraire les métadonnées EXIF</h2>
       <form onSubmit={handleSubmit}>
         <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          <input
-            type="checkbox"
-            checked={alphaMatting}
-            onChange={(e) => setAlphaMatting(e.target.checked)}
-          />
-          Détourage précis (cheveux, fourrure) — plus lent
-        </label>
         <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Supprimer le fond'}
+          {loading ? 'Traitement...' : 'Extraire'}
         </button>
       </form>
       {error && <p className="error">{error}</p>}
-      <ResultPanel blob={result} filename="remove-bg.png" previewType="image" />
+      {metadata && (
+        <div className="result-panel">
+          {Object.keys(metadata).length === 0 ? (
+            <p>Aucune métadonnée EXIF trouvée dans cette image.</p>
+          ) : (
+            <pre style={{ whiteSpace: 'pre-wrap', width: '100%' }}>{JSON.stringify(metadata, null, 2)}</pre>
+          )}
+        </div>
+      )}
     </section>
   )
 }

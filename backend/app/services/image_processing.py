@@ -2,7 +2,10 @@ import io
 
 import numpy as np
 import pillow_avif  # noqa: F401  (registers the AVIF codec with Pillow)
+import pillow_heif
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
+
+pillow_heif.register_heif_opener()  # lets Image.open() read .heic/.heif uploads
 from skimage.color import lab2rgb, rgb2lab
 from skimage.exposure import match_histograms
 

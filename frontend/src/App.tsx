@@ -12,6 +12,11 @@ import ResizeImage from './pages/ResizeImage'
 import RotateFlipImage from './pages/RotateFlipImage'
 import Watermark from './pages/Watermark'
 import AdjustImages from './pages/AdjustImages'
+import StripExif from './pages/StripExif'
+import ExtractExif from './pages/ExtractExif'
+import Deskew from './pages/Deskew'
+import Denoise from './pages/Denoise'
+import ContactSheet from './pages/ContactSheet'
 import IconPack from './pages/IconPack'
 import Srcset from './pages/Srcset'
 import Lqip from './pages/Lqip'
@@ -49,6 +54,11 @@ function App() {
         <Route path="/rotate-flip-image" element={<RotateFlipImage />} />
         <Route path="/watermark" element={<Watermark />} />
         <Route path="/adjust-images" element={<AdjustImages />} />
+        <Route path="/strip-exif" element={<StripExif />} />
+        <Route path="/extract-exif" element={<ExtractExif />} />
+        <Route path="/deskew" element={<Deskew />} />
+        <Route path="/denoise" element={<Denoise />} />
+        <Route path="/contact-sheet" element={<ContactSheet />} />
         <Route path="/icon-pack" element={<IconPack />} />
         <Route path="/srcset" element={<Srcset />} />
         <Route path="/lqip" element={<Lqip />} />

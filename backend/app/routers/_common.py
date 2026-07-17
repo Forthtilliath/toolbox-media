@@ -3,10 +3,18 @@ import zipfile
 
 from fastapi import UploadFile
 from fastapi.responses import StreamingResponse
+from PIL import Image
+
+from app.services.image_processing import FORMAT_MEDIA_TYPES
 
 
 def filenames_of(images: list[UploadFile]) -> list[str]:
     return [img.filename or f"image_{i}.png" for i, img in enumerate(images)]
+
+
+def media_type_of(data: bytes) -> str:
+    fmt = (Image.open(io.BytesIO(data)).format or "").lower()
+    return FORMAT_MEDIA_TYPES.get(fmt, "application/octet-stream")
 
 
 def zip_response(filenames: list[str], contents: list[bytes], download_name: str) -> StreamingResponse:

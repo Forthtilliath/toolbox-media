@@ -4,7 +4,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 from PIL import Image, UnidentifiedImageError
 
-from app.routers._common import filenames_of, zip_response
+from app.routers._common import filenames_of, media_type_of, zip_response
 from app.services.image_processing import (
     FORMAT_MEDIA_TYPES,
     RATIO_PRESETS,
@@ -22,11 +22,6 @@ from app.services.image_processing import (
 )
 
 router = APIRouter()
-
-
-def _media_type_of(data: bytes) -> str:
-    fmt = (Image.open(io.BytesIO(data)).format or "").lower()
-    return FORMAT_MEDIA_TYPES.get(fmt, "application/octet-stream")
 
 
 @router.post("/compress")
@@ -121,7 +116,7 @@ async def resize(
         output_bytes = resize_image(input_bytes, width, height, percent, keep_ratio)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
-    return StreamingResponse(io.BytesIO(output_bytes), media_type=_media_type_of(input_bytes))
+    return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
 
 
 @router.post("/rotate-flip")
@@ -136,7 +131,7 @@ async def rotate_flip(
         output_bytes = rotate_flip_image(input_bytes, angle, flip_horizontal, flip_vertical)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
-    return StreamingResponse(io.BytesIO(output_bytes), media_type=_media_type_of(input_bytes))
+    return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
 
 
 @router.post("/watermark")

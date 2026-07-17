@@ -36,6 +36,27 @@ const tools = [
     description: "Ajuster manuellement un lot de photos avec les mêmes réglages",
   },
   {
+    to: '/strip-exif',
+    label: 'Supprimer EXIF',
+    description: "Nettoyer les métadonnées d'une image avant de la partager",
+  },
+  {
+    to: '/extract-exif',
+    label: 'Extraire EXIF',
+    description: 'Lire les métadonnées (date, appareil, position GPS...)',
+  },
+  {
+    to: '/deskew',
+    label: 'Redresser image',
+    description: "Corriger automatiquement l'inclinaison (documents scannés)",
+  },
+  { to: '/denoise', label: 'Réduire le bruit', description: "Atténuer le bruit numérique d'une image" },
+  {
+    to: '/contact-sheet',
+    label: 'Planche contact',
+    description: 'Grille de miniatures à partir de plusieurs photos',
+  },
+  {
     to: '/icon-pack',
     label: 'Favicon / pack icônes',
     description: 'Générer favicon.ico ou un pack complet (apple-touch-icon, PWA, manifest.json)',

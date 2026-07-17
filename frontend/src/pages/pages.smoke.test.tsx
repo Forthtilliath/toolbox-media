@@ -12,9 +12,13 @@ import CompareImages from './CompareImages'
 import CompressImage from './CompressImage'
 import CompressVideo from './CompressVideo'
 import ConcatVideos from './ConcatVideos'
+import ContactSheet from './ContactSheet'
 import ConvertImage from './ConvertImage'
 import ConvertVideo from './ConvertVideo'
 import CropImage from './CropImage'
+import Denoise from './Denoise'
+import Deskew from './Deskew'
+import ExtractExif from './ExtractExif'
 import ExtractFrame from './ExtractFrame'
 import Home from './Home'
 import IconPack from './IconPack'
@@ -28,6 +32,7 @@ import ResizeImage from './ResizeImage'
 import RotateFlipImage from './RotateFlipImage'
 import Spritesheet from './Spritesheet'
 import Srcset from './Srcset'
+import StripExif from './StripExif'
 import SvgConvert from './SvgConvert'
 import SvgOptimize from './SvgOptimize'
 import TrimVideo from './TrimVideo'
@@ -47,6 +52,11 @@ const pages = [
   { Component: RotateFlipImage, heading: 'Pivoter / retourner une image' },
   { Component: Watermark, heading: 'Ajouter un filigrane' },
   { Component: AdjustImages, heading: 'Ajuster luminosité / contraste / saturation en lot' },
+  { Component: StripExif, heading: 'Supprimer les métadonnées EXIF' },
+  { Component: ExtractExif, heading: 'Extraire les métadonnées EXIF' },
+  { Component: Deskew, heading: 'Redresser une image' },
+  { Component: Denoise, heading: "Réduire le bruit d'une image" },
+  { Component: ContactSheet, heading: 'Générer une planche contact' },
   { Component: IconPack, heading: "Favicon et pack d'icônes" },
   { Component: Srcset, heading: "Générer un jeu d'images responsive (srcset)" },
   { Component: Lqip, heading: 'Générer un placeholder flou (LQIP)' },
