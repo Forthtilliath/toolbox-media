@@ -4,11 +4,11 @@ Idées d'outils supplémentaires pour la toolbox, en plus des 6 outils déjà im
 
 ## Images — édition
 
-- [ ] Rogner une image (crop libre + ratios prédéfinis 1:1, 4:3, 16:9)
-- [ ] Redimensionner une image (dimensions fixes ou %, avec/sans conservation du ratio)
-- [ ] Pivoter / retourner une image (rotation, flip horizontal/vertical)
-- [ ] Ajouter un filigrane (texte ou logo) sur un lot d'images
-- [ ] Ajuster luminosité / contraste / saturation en lot
+- [x] Rogner une image (crop libre + ratios prédéfinis 1:1, 4:3, 16:9)
+- [x] Redimensionner une image (dimensions fixes ou %, avec/sans conservation du ratio)
+- [x] Pivoter / retourner une image (rotation, flip horizontal/vertical)
+- [x] Ajouter un filigrane (texte ou logo) sur un lot d'images
+- [x] Ajuster luminosité / contraste / saturation en lot
 
 ## Images — assets pour le dev
 

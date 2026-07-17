@@ -49,6 +49,59 @@ export const api = {
     if (reference) formData.append('reference', reference)
     return requestFile('/images/normalize-brightness', formData)
   },
+  cropImage: (image: File, params: { ratio: string } | { x: number; y: number; width: number; height: number }) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    if ('ratio' in params) {
+      formData.append('ratio', params.ratio)
+    } else {
+      formData.append('x', String(params.x))
+      formData.append('y', String(params.y))
+      formData.append('width', String(params.width))
+      formData.append('height', String(params.height))
+    }
+    return requestFile('/images/crop', formData)
+  },
+  resizeImage: (
+    image: File,
+    params: { width?: number; height?: number; percent?: number; keepRatio: boolean },
+  ) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    if (params.percent !== undefined) formData.append('percent', String(params.percent))
+    if (params.width !== undefined) formData.append('width', String(params.width))
+    if (params.height !== undefined) formData.append('height', String(params.height))
+    formData.append('keep_ratio', String(params.keepRatio))
+    return requestFile('/images/resize', formData)
+  },
+  rotateFlipImage: (image: File, angle: number, flipHorizontal: boolean, flipVertical: boolean) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    formData.append('angle', String(angle))
+    formData.append('flip_horizontal', String(flipHorizontal))
+    formData.append('flip_vertical', String(flipVertical))
+    return requestFile('/images/rotate-flip', formData)
+  },
+  watermarkImages: (
+    images: File[],
+    params: { text?: string; logo?: File; opacity: number; position: string },
+  ) => {
+    const formData = new FormData()
+    images.forEach((image) => formData.append('images', image))
+    if (params.text) formData.append('text', params.text)
+    if (params.logo) formData.append('logo', params.logo)
+    formData.append('opacity', String(params.opacity))
+    formData.append('position', params.position)
+    return requestFile('/images/watermark', formData)
+  },
+  adjustImages: (images: File[], brightness: number, contrast: number, saturation: number) => {
+    const formData = new FormData()
+    images.forEach((image) => formData.append('images', image))
+    formData.append('brightness', String(brightness))
+    formData.append('contrast', String(contrast))
+    formData.append('saturation', String(saturation))
+    return requestFile('/images/adjust', formData)
+  },
   trimVideo: (video: File, start: number, end: number) => {
     const formData = new FormData()
     formData.append('video', video)

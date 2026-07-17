@@ -8,6 +8,11 @@ const links = [
   { to: '/brightness-match', label: 'Uniformiser luminosité' },
   { to: '/compress-image', label: 'Compresser image' },
   { to: '/convert-image', label: 'Convertir image' },
+  { to: '/crop-image', label: 'Rogner image' },
+  { to: '/resize-image', label: 'Redimensionner image' },
+  { to: '/rotate-flip-image', label: 'Pivoter / retourner' },
+  { to: '/watermark', label: 'Filigrane' },
+  { to: '/adjust-images', label: 'Luminosité/contraste/saturation' },
   { to: '/trim-video', label: 'Couper vidéo' },
   { to: '/video-to-gif', label: 'Vidéo -> GIF' },
 ]
