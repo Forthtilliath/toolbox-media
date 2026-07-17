@@ -1,3 +1,4 @@
+import hashlib
 import io
 import os
 
@@ -51,6 +52,40 @@ def compress_pdf(pdf_bytes: bytes) -> bytes:
         return doc.write(garbage=4, deflate=True, deflate_images=True, deflate_fonts=True)
     finally:
         doc.close()
+
+
+def compute_hashes(data: bytes) -> dict[str, str]:
+    return {"md5": hashlib.md5(data).hexdigest(), "sha256": hashlib.sha256(data).hexdigest()}
+
+
+def _parse_hex_color(value: str) -> tuple[int, int, int]:
+    value = value.lstrip("#")
+    if len(value) == 3:
+        value = "".join(c * 2 for c in value)
+    return (int(value[0:2], 16), int(value[2:4], 16), int(value[4:6], 16))
+
+
+def _relative_luminance(rgb: tuple[int, int, int]) -> float:
+    def channel(value: int) -> float:
+        c = value / 255
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+    r, g, b = rgb
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+
+
+def contrast_ratio(color_a: str, color_b: str) -> dict[str, object]:
+    luminance_a = _relative_luminance(_parse_hex_color(color_a))
+    luminance_b = _relative_luminance(_parse_hex_color(color_b))
+    lighter, darker = max(luminance_a, luminance_b), min(luminance_a, luminance_b)
+    ratio = (lighter + 0.05) / (darker + 0.05)
+    return {
+        "ratio": round(ratio, 2),
+        "aa_normal_text": ratio >= 4.5,
+        "aa_large_text": ratio >= 3.0,
+        "aaa_normal_text": ratio >= 7.0,
+        "aaa_large_text": ratio >= 4.5,
+    }
 
 
 def rename_batch(filenames: list[str], pattern: str, start: int) -> list[str]:

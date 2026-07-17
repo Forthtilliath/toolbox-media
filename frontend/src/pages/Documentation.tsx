@@ -93,6 +93,8 @@ const categories: CategoryDoc[] = [
       { to: '/merge-pdf', label: 'Fusionner PDF', description: "Combine plusieurs fichiers PDF en un seul, dans l'ordre d'envoi des fichiers." },
       { to: '/compress-pdf', label: 'Compresser PDF', description: "Réduit le poids d'un PDF (garbage collection des objets dupliqués + compression deflate des flux, images et polices)." },
       { to: '/rename-files', label: 'Renommer en lot', description: 'Renomme plusieurs fichiers selon un pattern ({n}, {n:03d}, {name}, {ext}) ; les collisions de noms sont automatiquement désambiguïsées.' },
+      { to: '/file-hash', label: 'Hash de fichier', description: "Calcule le MD5 et le SHA-256 de n'importe quel fichier (vérification d'intégrité)." },
+      { to: '/contrast-checker', label: 'Contraste WCAG', description: "Calcule le ratio de contraste entre deux couleurs et l'évalue face aux seuils d'accessibilité WCAG 2.0 (AA/AAA, texte normal/large)." },
     ],
     screenshot: { src: '/screenshots/qrcode.png', alt: 'QR code généré à partir d\'une URL' },
   },

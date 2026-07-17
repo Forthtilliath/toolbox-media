@@ -330,4 +330,21 @@ export const api = {
     formData.append('file', file)
     return requestFile('/misc/compress-pdf', formData)
   },
+  computeHash: (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return requestJson<{ md5: string; sha256: string }>('/misc/hash', formData)
+  },
+  contrastRatio: (colorA: string, colorB: string) => {
+    const formData = new FormData()
+    formData.append('color_a', colorA)
+    formData.append('color_b', colorB)
+    return requestJson<{
+      ratio: number
+      aa_normal_text: boolean
+      aa_large_text: boolean
+      aaa_normal_text: boolean
+      aaa_large_text: boolean
+    }>('/misc/contrast', formData)
+  },
 }

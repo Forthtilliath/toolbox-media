@@ -7,6 +7,8 @@ from PIL import UnidentifiedImageError
 from app.routers._common import zip_response
 from app.services.misc_processing import (
     compress_pdf,
+    compute_hashes,
+    contrast_ratio,
     generate_qrcode,
     images_to_pdf,
     merge_pdfs,
@@ -78,6 +80,20 @@ async def compress_pdf_endpoint(file: UploadFile = File(...)) -> StreamingRespon
         media_type="application/pdf",
         headers={"Content-Disposition": "attachment; filename=compressed.pdf"},
     )
+
+
+@router.post("/hash")
+async def hash_endpoint(file: UploadFile = File(...)) -> dict[str, str]:
+    data = await file.read()
+    return compute_hashes(data)
+
+
+@router.post("/contrast")
+async def contrast_endpoint(color_a: str = Form(...), color_b: str = Form(...)) -> dict[str, object]:
+    try:
+        return contrast_ratio(color_a, color_b)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Couleur invalide (format hexadécimal attendu)")
 
 
 @router.post("/rename")

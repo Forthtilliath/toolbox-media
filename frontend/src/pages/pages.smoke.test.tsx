@@ -14,6 +14,7 @@ import CompressPdf from './CompressPdf'
 import CompressVideo from './CompressVideo'
 import ConcatVideos from './ConcatVideos'
 import ContactSheet from './ContactSheet'
+import ContrastChecker from './ContrastChecker'
 import ConvertImage from './ConvertImage'
 import ConvertVideo from './ConvertVideo'
 import CropImage from './CropImage'
@@ -22,6 +23,7 @@ import Deskew from './Deskew'
 import ExtractAudio from './ExtractAudio'
 import ExtractExif from './ExtractExif'
 import ExtractFrame from './ExtractFrame'
+import FileHash from './FileHash'
 import Home from './Home'
 import IconPack from './IconPack'
 import ImagesToPdf from './ImagesToPdf'
@@ -95,6 +97,8 @@ const pages = [
   { Component: MergePdf, heading: 'Fusionner plusieurs PDF' },
   { Component: CompressPdf, heading: 'Compresser un PDF' },
   { Component: RenameFiles, heading: 'Renommer un lot de fichiers' },
+  { Component: FileHash, heading: "Calculer le hash d'un fichier" },
+  { Component: ContrastChecker, heading: 'Vérifier le contraste de deux couleurs' },
 ]
 
 describe('tool pages', () => {

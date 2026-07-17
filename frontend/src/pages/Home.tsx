@@ -181,6 +181,16 @@ const tools = [
     label: 'Renommer en lot',
     description: 'Renommer plusieurs fichiers selon un pattern (numéro, nom original...)',
   },
+  {
+    to: '/file-hash',
+    label: 'Hash de fichier',
+    description: 'Calculer le hash MD5 et SHA-256 de n\'importe quel fichier',
+  },
+  {
+    to: '/contrast-checker',
+    label: 'Contraste WCAG',
+    description: 'Vérifier le ratio de contraste entre deux couleurs (accessibilité)',
+  },
 ]
 
 export default function Home() {

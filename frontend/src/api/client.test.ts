@@ -534,4 +534,22 @@ describe('misc', () => {
     expect(url).toBe('/api/misc/compress-pdf')
     expect(formData.get('file')).toBe(pdf)
   })
+
+  it('computeHash parses the md5/sha256 response', async () => {
+    mockFetchOk({ md5: 'abc', sha256: 'def' })
+    const result = await api.computeHash(file())
+    expect(lastCall().url).toBe('/api/misc/hash')
+    expect(result.md5).toBe('abc')
+    expect(result.sha256).toBe('def')
+  })
+
+  it('contrastRatio sends both colors and parses the result', async () => {
+    mockFetchOk({ ratio: 21, aa_normal_text: true, aa_large_text: true, aaa_normal_text: true, aaa_large_text: true })
+    const result = await api.contrastRatio('000000', 'ffffff')
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/misc/contrast')
+    expect(formData.get('color_a')).toBe('000000')
+    expect(formData.get('color_b')).toBe('ffffff')
+    expect(result.ratio).toBe(21)
+  })
 })

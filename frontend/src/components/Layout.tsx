@@ -48,6 +48,8 @@ const links = [
   { to: '/merge-pdf', label: 'Fusionner PDF' },
   { to: '/compress-pdf', label: 'Compresser PDF' },
   { to: '/rename-files', label: 'Renommer en lot' },
+  { to: '/file-hash', label: 'Hash de fichier' },
+  { to: '/contrast-checker', label: 'Contraste WCAG' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {

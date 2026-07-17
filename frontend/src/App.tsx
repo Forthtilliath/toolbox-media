@@ -46,6 +46,8 @@ import PdfToImages from './pages/PdfToImages'
 import MergePdf from './pages/MergePdf'
 import CompressPdf from './pages/CompressPdf'
 import RenameFiles from './pages/RenameFiles'
+import FileHash from './pages/FileHash'
+import ContrastChecker from './pages/ContrastChecker'
 
 function App() {
   return (
@@ -97,6 +99,8 @@ function App() {
         <Route path="/merge-pdf" element={<MergePdf />} />
         <Route path="/compress-pdf" element={<CompressPdf />} />
         <Route path="/rename-files" element={<RenameFiles />} />
+        <Route path="/file-hash" element={<FileHash />} />
+        <Route path="/contrast-checker" element={<ContrastChecker />} />
       </Routes>
     </Layout>
   )

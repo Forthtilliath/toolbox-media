@@ -45,8 +45,8 @@ Idées d'outils supplémentaires pour la toolbox.
 
 ## Divers
 
-- [ ] Calculer le hash d'un fichier (MD5/SHA-256)
-- [ ] Vérifier le contraste de deux couleurs (accessibilité WCAG)
+- [x] Calculer le hash d'un fichier (MD5/SHA-256)
+- [x] Vérifier le contraste de deux couleurs (accessibilité WCAG)
 
 ---
 
