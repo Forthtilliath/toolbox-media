@@ -32,11 +32,11 @@ Idées d'outils supplémentaires pour la toolbox.
 
 ## Vidéo — avancé
 
-- [ ] Extraire la piste audio d'une vidéo en fichier séparé (mp3/wav)
-- [ ] Accélérer / ralentir une vidéo
-- [ ] Incruster des sous-titres (fichier .srt) dans une vidéo
-- [ ] Générer une boucle vidéo parfaite (avec cross-fade)
-- [ ] Générer une visualisation waveform de la piste audio
+- [x] Extraire la piste audio d'une vidéo en fichier séparé (mp3/wav)
+- [x] Accélérer / ralentir une vidéo (0.5x-2x, limite du filtre atempo en un seul passage)
+- [x] Incruster des sous-titres (fichier .srt) dans une vidéo
+- [x] Générer une boucle vidéo parfaite (avec cross-fade) — vidéo uniquement, sans piste audio
+- [x] Générer une visualisation waveform de la piste audio
 
 ## PDF
 

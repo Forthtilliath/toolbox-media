@@ -265,6 +265,37 @@ export const api = {
     if (audio) formData.append('audio', audio)
     return requestFile('/videos/audio-track', formData)
   },
+  extractAudio: (video: File, targetFormat: 'mp3' | 'wav') => {
+    const formData = new FormData()
+    formData.append('video', video)
+    formData.append('target_format', targetFormat)
+    return requestFile('/videos/extract-audio', formData)
+  },
+  changeSpeed: (video: File, speed: number) => {
+    const formData = new FormData()
+    formData.append('video', video)
+    formData.append('speed', String(speed))
+    return requestFile('/videos/speed', formData)
+  },
+  burnSubtitles: (video: File, srt: File) => {
+    const formData = new FormData()
+    formData.append('video', video)
+    formData.append('srt', srt)
+    return requestFile('/videos/subtitles', formData)
+  },
+  createLoop: (video: File, fadeDuration: number) => {
+    const formData = new FormData()
+    formData.append('video', video)
+    formData.append('fade_duration', String(fadeDuration))
+    return requestFile('/videos/loop', formData)
+  },
+  waveform: (video: File, width: number, height: number) => {
+    const formData = new FormData()
+    formData.append('video', video)
+    formData.append('width', String(width))
+    formData.append('height', String(height))
+    return requestFile('/videos/waveform', formData)
+  },
   qrcode: (data: string, boxSize: number) => {
     const formData = new FormData()
     formData.append('data', data)

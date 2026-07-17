@@ -46,6 +46,16 @@ def _has_audio_stream(path: str) -> bool:
     return bool(result.stdout.strip())
 
 
+def _probe_duration(path: str) -> float:
+    result = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return float(result.stdout.strip())
+
+
 def trim_video(input_bytes: bytes, start: float, end: float, suffix: str) -> str:
     input_path = _write_temp_input(input_bytes, suffix)
     output_fd, output_path = tempfile.mkstemp(suffix=suffix)
@@ -235,3 +245,145 @@ def replace_audio(video_bytes: bytes, video_suffix: str, audio_bytes: bytes, aud
         os.remove(video_path)
         os.remove(audio_path)
     return output_path
+
+
+AUDIO_CODECS = {"mp3": "libmp3lame", "wav": "pcm_s16le"}
+
+
+def extract_audio(input_bytes: bytes, suffix: str, target_format: str) -> str:
+    input_path = _write_temp_input(input_bytes, suffix)
+    output_fd, output_path = tempfile.mkstemp(suffix=f".{target_format}")
+    os.close(output_fd)
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", input_path, "-vn", "-acodec", AUDIO_CODECS[target_format], output_path],
+            check=True,
+            capture_output=True,
+        )
+    finally:
+        os.remove(input_path)
+    return output_path
+
+
+def change_speed(input_bytes: bytes, suffix: str, speed: float) -> str:
+    input_path = _write_temp_input(input_bytes, suffix)
+    output_fd, output_path = tempfile.mkstemp(suffix=suffix)
+    os.close(output_fd)
+    has_audio = _has_audio_stream(input_path)
+    cmd = ["ffmpeg", "-y", "-i", input_path, "-filter:v", f"setpts={1 / speed}*PTS"]
+    if has_audio:
+        # atempo only accepts 0.5-2.0 per instance; that's also the range this tool
+        # exposes, so a single filter is always enough here.
+        cmd += ["-filter:a", f"atempo={speed}", "-c:a", "aac"]
+    else:
+        cmd += ["-an"]
+    cmd += ["-c:v", "libx264", output_path]
+    try:
+        subprocess.run(cmd, check=True, capture_output=True)
+    finally:
+        os.remove(input_path)
+    return output_path
+
+
+def burn_subtitles(video_bytes: bytes, video_suffix: str, srt_bytes: bytes) -> str:
+    video_path = _write_temp_input(video_bytes, video_suffix)
+    srt_path = _write_temp_input(srt_bytes, ".srt")
+    output_fd, output_path = tempfile.mkstemp(suffix=video_suffix)
+    os.close(output_fd)
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", video_path, "-vf", f"subtitles={srt_path}", "-c:a", "copy", output_path],
+            check=True,
+            capture_output=True,
+        )
+    finally:
+        os.remove(video_path)
+        os.remove(srt_path)
+    return output_path
+
+
+def create_seamless_loop(input_bytes: bytes, suffix: str, fade_duration: float) -> str:
+    # Video-only: the transition segment is built by cross-fading the last `fade_duration`
+    # seconds into the first `fade_duration` seconds, so looping playback shows no cut.
+    # Audio isn't cross-faded (acrossfade would need its own careful timing), so it's
+    # dropped here — this tool targets silent background loops.
+    input_path = _write_temp_input(input_bytes, suffix)
+    try:
+        duration = _probe_duration(input_path)
+        _, _, fps = _probe_video_info(input_path)
+        fade = min(fade_duration, duration / 2 - 0.05)
+        if fade <= 0:
+            raise ValueError("Vidéo trop courte pour ce fondu")
+
+        middle_fd, middle_path = tempfile.mkstemp(suffix=".mp4")
+        os.close(middle_fd)
+        transition_fd, transition_path = tempfile.mkstemp(suffix=".mp4")
+        os.close(transition_fd)
+        list_fd, list_path = tempfile.mkstemp(suffix=".txt")
+        os.close(list_fd)
+        output_fd, output_path = tempfile.mkstemp(suffix=".mp4")
+        os.close(output_fd)
+        try:
+            subprocess.run(
+                [
+                    "ffmpeg", "-y", "-i", input_path,
+                    "-ss", str(fade), "-to", str(duration - fade),
+                    "-an", "-c:v", "libx264",
+                    middle_path,
+                ],
+                check=True,
+                capture_output=True,
+            )
+            # xfade requires a constant frame rate on its inputs; trim+setpts alone
+            # leaves that unset, so it must be pinned explicitly here.
+            filter_complex = (
+                f"[0:v]trim=start={duration - fade}:end={duration},setpts=PTS-STARTPTS,fps={fps}[e];"
+                f"[0:v]trim=start=0:end={fade},setpts=PTS-STARTPTS,fps={fps}[b];"
+                f"[e][b]xfade=transition=fade:duration={fade}:offset=0[x]"
+            )
+            subprocess.run(
+                [
+                    "ffmpeg", "-y", "-i", input_path,
+                    "-filter_complex", filter_complex,
+                    "-map", "[x]", "-c:v", "libx264",
+                    transition_path,
+                ],
+                check=True,
+                capture_output=True,
+            )
+            with open(list_path, "w") as f:
+                f.write(f"file '{middle_path}'\nfile '{transition_path}'\n")
+            subprocess.run(
+                ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_path, "-c", "copy", output_path],
+                check=True,
+                capture_output=True,
+            )
+        finally:
+            os.remove(middle_path)
+            os.remove(transition_path)
+            os.remove(list_path)
+    finally:
+        os.remove(input_path)
+    return output_path
+
+
+def generate_waveform(input_bytes: bytes, suffix: str, width: int, height: int) -> bytes:
+    input_path = _write_temp_input(input_bytes, suffix)
+    output_fd, output_path = tempfile.mkstemp(suffix=".png")
+    os.close(output_fd)
+    try:
+        subprocess.run(
+            [
+                "ffmpeg", "-y", "-i", input_path,
+                "-filter_complex", f"showwavespic=s={width}x{height}:colors=white",
+                "-frames:v", "1",
+                output_path,
+            ],
+            check=True,
+            capture_output=True,
+        )
+        with open(output_path, "rb") as f:
+            return f.read()
+    finally:
+        os.remove(input_path)
+        os.remove(output_path)

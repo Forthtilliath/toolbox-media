@@ -431,6 +431,48 @@ describe('video', () => {
     const { formData } = lastCall()
     expect(formData.get('audio')).toBe(audio)
   })
+
+  it('extractAudio sends the target format', async () => {
+    mockFetchOk()
+    await api.extractAudio(video(), 'wav')
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/videos/extract-audio')
+    expect(formData.get('target_format')).toBe('wav')
+  })
+
+  it('changeSpeed sends the speed', async () => {
+    mockFetchOk()
+    await api.changeSpeed(video(), 1.5)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/videos/speed')
+    expect(formData.get('speed')).toBe('1.5')
+  })
+
+  it('burnSubtitles sends the video and the srt file', async () => {
+    mockFetchOk()
+    const srt = new File(['1\n00:00:00,000 --> 00:00:01,000\nHi'], 'subs.srt', { type: 'text/plain' })
+    await api.burnSubtitles(video(), srt)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/videos/subtitles')
+    expect(formData.get('srt')).toBe(srt)
+  })
+
+  it('createLoop sends the fade duration', async () => {
+    mockFetchOk()
+    await api.createLoop(video(), 1.5)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/videos/loop')
+    expect(formData.get('fade_duration')).toBe('1.5')
+  })
+
+  it('waveform sends width and height', async () => {
+    mockFetchOk()
+    await api.waveform(video(), 1000, 200)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/videos/waveform')
+    expect(formData.get('width')).toBe('1000')
+    expect(formData.get('height')).toBe('200')
+  })
 })
 
 describe('misc', () => {

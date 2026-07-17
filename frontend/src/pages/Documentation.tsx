@@ -76,6 +76,11 @@ const categories: CategoryDoc[] = [
       { to: '/extract-frame', label: 'Extraire une frame', description: 'Récupère une image fixe (PNG) à un instant précis de la vidéo.' },
       { to: '/concat-videos', label: 'Concaténer', description: "Met bout à bout plusieurs extraits ; la résolution et le fps sont normalisés automatiquement sur le premier clip. Chaque clip doit avoir une piste audio." },
       { to: '/audio-track', label: 'Piste audio', description: "Retire la piste audio d'une vidéo, ou la remplace/ajoute à partir d'un fichier audio séparé." },
+      { to: '/extract-audio', label: 'Extraire audio', description: "Exporte la piste audio d'une vidéo en fichier séparé, MP3 ou WAV." },
+      { to: '/video-speed', label: 'Vitesse vidéo', description: "Accélère ou ralentit une vidéo entre 0.5x et 2x (limite du filtre atempo en un seul passage), image et son synchronisés." },
+      { to: '/subtitles', label: 'Sous-titres', description: "Incruste un fichier de sous-titres .srt directement dans l'image de la vidéo (rendu via libass)." },
+      { to: '/video-loop', label: 'Boucle vidéo', description: "Fondu enchaîné entre la fin et le début de la vidéo pour une lecture en boucle sans coupure visible. Vidéo uniquement, la piste audio n'est pas conservée." },
+      { to: '/waveform', label: 'Waveform audio', description: "Génère une image statique de la forme d'onde de la piste audio, dimensions réglables." },
     ],
   },
   {

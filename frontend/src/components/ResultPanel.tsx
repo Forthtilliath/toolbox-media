@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 interface ResultPanelProps {
   blob: Blob | null
   filename: string
-  previewType?: 'image' | 'video' | 'none'
+  previewType?: 'image' | 'video' | 'audio' | 'none'
 }
 
 export default function ResultPanel({ blob, filename, previewType = 'none' }: ResultPanelProps) {
@@ -25,6 +25,7 @@ export default function ResultPanel({ blob, filename, previewType = 'none' }: Re
     <div className="result-panel">
       {previewType === 'image' && <img src={url} alt="Résultat" />}
       {previewType === 'video' && <video src={url} controls />}
+      {previewType === 'audio' && <audio src={url} controls />}
       <a href={url} download={filename}>
         Télécharger {filename}
       </a>

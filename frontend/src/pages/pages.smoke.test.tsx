@@ -18,6 +18,7 @@ import ConvertVideo from './ConvertVideo'
 import CropImage from './CropImage'
 import Denoise from './Denoise'
 import Deskew from './Deskew'
+import ExtractAudio from './ExtractAudio'
 import ExtractExif from './ExtractExif'
 import ExtractFrame from './ExtractFrame'
 import Home from './Home'
@@ -35,11 +36,15 @@ import SocialFormats from './SocialFormats'
 import Spritesheet from './Spritesheet'
 import Srcset from './Srcset'
 import StripExif from './StripExif'
+import Subtitles from './Subtitles'
 import SvgConvert from './SvgConvert'
 import SvgOptimize from './SvgOptimize'
 import TrimVideo from './TrimVideo'
+import VideoLoop from './VideoLoop'
+import VideoSpeed from './VideoSpeed'
 import VideoToGif from './VideoToGif'
 import Watermark from './Watermark'
+import Waveform from './Waveform'
 
 // One entry per tool page: renders it and asserts its <h2> heading, so a typo or a
 // broken import in any of the 30 pages fails fast instead of only showing up in the browser.
@@ -77,6 +82,11 @@ const pages = [
   { Component: ExtractFrame, heading: 'Extraire une frame / thumbnail' },
   { Component: ConcatVideos, heading: 'Concaténer plusieurs extraits vidéo' },
   { Component: AudioTrack, heading: 'Ajouter / retirer la piste audio' },
+  { Component: ExtractAudio, heading: 'Extraire la piste audio' },
+  { Component: VideoSpeed, heading: 'Accélérer / ralentir une vidéo' },
+  { Component: Subtitles, heading: 'Incruster des sous-titres' },
+  { Component: VideoLoop, heading: 'Générer une boucle vidéo parfaite' },
+  { Component: Waveform, heading: 'Générer une visualisation waveform' },
   { Component: QrCode, heading: 'Générer un QR code' },
   { Component: ImagesToPdf, heading: 'Convertir des images en PDF' },
   { Component: PdfToImages, heading: "Extraire les pages d'un PDF en images" },

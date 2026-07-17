@@ -7,11 +7,17 @@ from fastapi.responses import FileResponse, StreamingResponse
 from starlette.background import BackgroundTask
 
 from app.services.video_processing import (
+    AUDIO_CODECS,
     VIDEO_CODECS,
+    burn_subtitles,
+    change_speed,
     compress_video,
     concat_videos,
     convert_video_format,
+    create_seamless_loop,
+    extract_audio,
     extract_frame,
+    generate_waveform,
     remove_audio,
     replace_audio,
     trim_video,
@@ -165,3 +171,87 @@ async def audio_track(
         filename=f"audio_track{suffix}",
         background=BackgroundTask(_cleanup, output_path),
     )
+
+
+@router.post("/extract-audio")
+async def extract_audio_endpoint(
+    video: UploadFile = File(...), target_format: str = Form("mp3")
+) -> FileResponse:
+    if target_format not in AUDIO_CODECS:
+        raise HTTPException(status_code=400, detail=f"Format inconnu: {target_format}")
+    input_bytes = await video.read()
+    try:
+        output_path = extract_audio(input_bytes, _suffix_of(video.filename), target_format)
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+    return FileResponse(
+        output_path,
+        media_type=f"audio/{target_format}",
+        filename=f"audio.{target_format}",
+        background=BackgroundTask(_cleanup, output_path),
+    )
+
+
+@router.post("/speed")
+async def speed_endpoint(video: UploadFile = File(...), speed: float = Form(...)) -> FileResponse:
+    if not 0.5 <= speed <= 2.0:
+        raise HTTPException(status_code=400, detail="La vitesse doit être comprise entre 0.5 et 2.0")
+    input_bytes = await video.read()
+    suffix = _suffix_of(video.filename)
+    try:
+        output_path = change_speed(input_bytes, suffix, speed)
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+    return FileResponse(
+        output_path,
+        media_type="video/mp4",
+        filename=f"speed{suffix}",
+        background=BackgroundTask(_cleanup, output_path),
+    )
+
+
+@router.post("/subtitles")
+async def subtitles_endpoint(video: UploadFile = File(...), srt: UploadFile = File(...)) -> FileResponse:
+    input_bytes = await video.read()
+    srt_bytes = await srt.read()
+    suffix = _suffix_of(video.filename)
+    try:
+        output_path = burn_subtitles(input_bytes, suffix, srt_bytes)
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+    return FileResponse(
+        output_path,
+        media_type="video/mp4",
+        filename=f"sous-titres{suffix}",
+        background=BackgroundTask(_cleanup, output_path),
+    )
+
+
+@router.post("/loop")
+async def loop_endpoint(video: UploadFile = File(...), fade_duration: float = Form(1.0)) -> FileResponse:
+    input_bytes = await video.read()
+    suffix = _suffix_of(video.filename)
+    try:
+        output_path = create_seamless_loop(input_bytes, suffix, fade_duration)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+    return FileResponse(
+        output_path,
+        media_type="video/mp4",
+        filename="loop.mp4",
+        background=BackgroundTask(_cleanup, output_path),
+    )
+
+
+@router.post("/waveform")
+async def waveform_endpoint(
+    video: UploadFile = File(...), width: int = Form(1280), height: int = Form(240)
+) -> StreamingResponse:
+    input_bytes = await video.read()
+    try:
+        image_bytes = generate_waveform(input_bytes, _suffix_of(video.filename), width, height)
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+    return StreamingResponse(io.BytesIO(image_bytes), media_type="image/png")

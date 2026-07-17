@@ -130,6 +130,31 @@ const tools = [
     label: 'Piste audio',
     description: 'Retirer la piste audio, ou la remplacer par un autre fichier',
   },
+  {
+    to: '/extract-audio',
+    label: 'Extraire audio',
+    description: "Extraire la piste audio d'une vidéo en fichier séparé (mp3/wav)",
+  },
+  {
+    to: '/video-speed',
+    label: 'Vitesse vidéo',
+    description: 'Accélérer ou ralentir une vidéo (0.5x à 2x)',
+  },
+  {
+    to: '/subtitles',
+    label: 'Sous-titres',
+    description: 'Incruster un fichier .srt directement dans la vidéo',
+  },
+  {
+    to: '/video-loop',
+    label: 'Boucle vidéo',
+    description: 'Générer une boucle vidéo parfaite avec fondu enchaîné',
+  },
+  {
+    to: '/waveform',
+    label: 'Waveform audio',
+    description: "Générer une image de la forme d'onde de la piste audio",
+  },
   { to: '/qrcode', label: 'QR code', description: 'Générer un QR code à partir d\'un texte ou d\'une URL' },
   {
     to: '/images-to-pdf',

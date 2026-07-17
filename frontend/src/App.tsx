@@ -35,6 +35,11 @@ import CompressVideo from './pages/CompressVideo'
 import ExtractFrame from './pages/ExtractFrame'
 import ConcatVideos from './pages/ConcatVideos'
 import AudioTrack from './pages/AudioTrack'
+import ExtractAudio from './pages/ExtractAudio'
+import VideoSpeed from './pages/VideoSpeed'
+import Subtitles from './pages/Subtitles'
+import VideoLoop from './pages/VideoLoop'
+import Waveform from './pages/Waveform'
 import QrCode from './pages/QrCode'
 import ImagesToPdf from './pages/ImagesToPdf'
 import PdfToImages from './pages/PdfToImages'
@@ -79,6 +84,11 @@ function App() {
         <Route path="/extract-frame" element={<ExtractFrame />} />
         <Route path="/concat-videos" element={<ConcatVideos />} />
         <Route path="/audio-track" element={<AudioTrack />} />
+        <Route path="/extract-audio" element={<ExtractAudio />} />
+        <Route path="/video-speed" element={<VideoSpeed />} />
+        <Route path="/subtitles" element={<Subtitles />} />
+        <Route path="/video-loop" element={<VideoLoop />} />
+        <Route path="/waveform" element={<Waveform />} />
         <Route path="/qrcode" element={<QrCode />} />
         <Route path="/images-to-pdf" element={<ImagesToPdf />} />
         <Route path="/pdf-to-images" element={<PdfToImages />} />
