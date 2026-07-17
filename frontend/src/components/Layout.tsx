@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 
 const links = [
   { to: '/', label: 'Accueil', end: true },
+  { to: '/documentation', label: 'Documentation' },
   { to: '/remove-background', label: 'Remove BG' },
   { to: '/color-match', label: 'Uniformiser teintes' },
   { to: '/brightness-match', label: 'Uniformiser luminosité' },

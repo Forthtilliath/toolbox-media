@@ -128,3 +128,40 @@ button:disabled {
   max-width: 100%;
   border-radius: 8px;
 }
+
+.doc-category {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.doc-category h3 {
+  margin-bottom: 0.25rem;
+}
+
+.doc-tool {
+  margin: 0.9rem 0;
+}
+
+.doc-tool dt a {
+  font-weight: 600;
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.doc-tool dt a:hover {
+  text-decoration: underline;
+}
+
+.doc-tool dd {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.doc-screenshot {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  margin-top: 1rem;
+}

@@ -4,16 +4,34 @@ Une boîte à outils web pour le traitement d'images et de vidéos : suppression
 
 ## Sommaire
 
+- [Aperçu](#aperçu)
 - [Fonctionnalités](#fonctionnalités)
 - [Stack technique](#stack-technique)
 - [Démarrage rapide](#démarrage-rapide)
 - [Développement local](#développement-local-sans-docker)
+- [Tests](#tests)
 - [Structure du projet](#structure-du-projet)
 - [API](#api)
 - [Roadmap](#roadmap)
 - [Licence](#licence)
 
+## Aperçu
+
+| Accueil | Comparer deux images |
+|---|---|
+| ![Page d'accueil](docs/screenshots/home.png) | ![Comparaison de deux images avec heatmap](docs/screenshots/compare-images.png) |
+
+| Palette de couleurs | QR code |
+|---|---|
+| ![Extraction de palette de couleurs](docs/screenshots/color-palette.png) | ![QR code généré](docs/screenshots/qrcode.png) |
+
+L'application embarque aussi sa propre page **Documentation** (`/documentation`), qui détaille chaque outil par catégorie avec un lien direct vers sa page :
+
+![Page Documentation de l'application](docs/screenshots/documentation.png)
+
 ## Fonctionnalités
+
+Pour une présentation outil par outil directement dans l'app (avec des liens cliquables), voir la page **Documentation** accessible depuis le menu une fois l'application lancée.
 
 ### Retouche d'image
 
@@ -136,6 +154,27 @@ npm run dev
 
 L'application est alors disponible sur http://localhost:5173, branchée sur le backend local.
 
+## Tests
+
+**Backend** — [pytest](https://docs.pytest.org/), un test par endpoint (cas nominal + principaux cas d'erreur), exécutés directement contre l'app FastAPI via `TestClient` (pas besoin de serveur lancé) :
+
+```bash
+cd backend
+source .venv/bin/activate      # ou créez-le : voir "Développement local" ci-dessus
+pip install -r requirements-dev.txt
+pytest -v
+```
+
+Les images/vidéos de test sont générées à la volée par les fixtures (`Pillow`, `ffmpeg`) — aucun fichier binaire dans le repo. Seul le test `test_remove_background` nécessite un accès réseau sortant : `rembg` télécharge le modèle U2Net depuis GitHub Releases au premier appel.
+
+**Frontend** — [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/), avec deux volets : les appels API (`client.ts`) et un rendu de chaque page du site :
+
+```bash
+cd frontend
+npm install
+npm run test
+```
+
 ## Structure du projet
 
 ```
@@ -145,14 +184,21 @@ toolbox-media/
 │   │   ├── main.py                # Point d'entrée FastAPI, middlewares, routers
 │   │   ├── routers/               # Un fichier par domaine (images, videos, svg, assets...)
 │   │   └── services/              # Logique métier (Pillow/ffmpeg/etc.), sans dépendance FastAPI
+│   ├── tests/                     # pytest, un fichier par domaine (miroir des routers)
 │   ├── requirements.txt
+│   ├── requirements-dev.txt       # + pytest/httpx, pour lancer les tests
 │   └── Dockerfile
 ├── frontend/
+│   ├── public/screenshots/        # Images utilisées par la page Documentation in-app
 │   ├── src/
-│   │   ├── api/client.ts          # Un appel HTTP par outil
+│   │   ├── api/
+│   │   │   ├── client.ts          # Un appel HTTP par outil
+│   │   │   └── client.test.ts     # Tests de client.ts (Vitest)
 │   │   ├── components/            # Layout, panneau de résultat
-│   │   └── pages/                 # Une page par outil
+│   │   ├── pages/                 # Une page par outil + Documentation.tsx
+│   │   └── test/setup.ts          # Config Vitest (jest-dom)
 │   └── Dockerfile
+├── docs/screenshots/               # Captures d'écran utilisées par ce README
 ├── docker-compose.yml
 └── UPGRADE.md                     # Backlog des prochains outils
 ```

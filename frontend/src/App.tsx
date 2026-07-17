@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
+import Documentation from './pages/Documentation'
 import RemoveBackground from './pages/RemoveBackground'
 import ColorMatch from './pages/ColorMatch'
 import BrightnessMatch from './pages/BrightnessMatch'
@@ -37,6 +38,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/documentation" element={<Documentation />} />
         <Route path="/remove-background" element={<RemoveBackground />} />
         <Route path="/color-match" element={<ColorMatch />} />
         <Route path="/brightness-match" element={<BrightnessMatch />} />

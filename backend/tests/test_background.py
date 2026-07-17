@@ -1,0 +1,9 @@
+# Requires network access on first run: rembg downloads the U2Net ONNX model
+# from GitHub releases the first time it's used, then caches it under ~/.u2net.
+def test_remove_background(client, jpeg_bytes):
+    response = client.post(
+        "/api/background/remove",
+        files={"image": ("photo.jpg", jpeg_bytes, "image/jpeg")},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/png"
