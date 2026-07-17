@@ -222,4 +222,28 @@ export const api = {
     if (audio) formData.append('audio', audio)
     return requestFile('/videos/audio-track', formData)
   },
+  qrcode: (data: string, boxSize: number) => {
+    const formData = new FormData()
+    formData.append('data', data)
+    formData.append('box_size', String(boxSize))
+    return requestFile('/misc/qrcode', formData)
+  },
+  imagesToPdf: (images: File[]) => {
+    const formData = new FormData()
+    images.forEach((image) => formData.append('images', image))
+    return requestFile('/misc/images-to-pdf', formData)
+  },
+  pdfToImages: (file: File, dpi: number) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('dpi', String(dpi))
+    return requestFile('/misc/pdf-to-images', formData)
+  },
+  renameFiles: (files: File[], pattern: string, start: number) => {
+    const formData = new FormData()
+    files.forEach((file) => formData.append('files', file))
+    formData.append('pattern', pattern)
+    formData.append('start', String(start))
+    return requestFile('/misc/rename', formData)
+  },
 }

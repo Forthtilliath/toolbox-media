@@ -99,6 +99,22 @@ const tools = [
     label: 'Piste audio',
     description: 'Retirer la piste audio, ou la remplacer par un autre fichier',
   },
+  { to: '/qrcode', label: 'QR code', description: 'Générer un QR code à partir d\'un texte ou d\'une URL' },
+  {
+    to: '/images-to-pdf',
+    label: 'Images vers PDF',
+    description: 'Assembler plusieurs images en un seul PDF',
+  },
+  {
+    to: '/pdf-to-images',
+    label: 'PDF vers images',
+    description: 'Extraire les pages d\'un PDF en images PNG',
+  },
+  {
+    to: '/rename-files',
+    label: 'Renommer en lot',
+    description: 'Renommer plusieurs fichiers selon un pattern (numéro, nom original...)',
+  },
 ]
 
 export default function Home() {

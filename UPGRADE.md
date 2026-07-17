@@ -37,9 +37,9 @@ Idées d'outils supplémentaires pour la toolbox, en plus des 6 outils déjà im
 
 ## Divers
 
-- [ ] Générer un QR code
-- [ ] Convertir des images en PDF / extraire les pages d'un PDF en images
-- [ ] Renommer un lot de fichiers selon un pattern
+- [x] Générer un QR code
+- [x] Convertir des images en PDF / extraire les pages d'un PDF en images
+- [x] Renommer un lot de fichiers selon un pattern
 
 ---
 

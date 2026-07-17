@@ -27,6 +27,10 @@ import CompressVideo from './pages/CompressVideo'
 import ExtractFrame from './pages/ExtractFrame'
 import ConcatVideos from './pages/ConcatVideos'
 import AudioTrack from './pages/AudioTrack'
+import QrCode from './pages/QrCode'
+import ImagesToPdf from './pages/ImagesToPdf'
+import PdfToImages from './pages/PdfToImages'
+import RenameFiles from './pages/RenameFiles'
 
 function App() {
   return (
@@ -59,6 +63,10 @@ function App() {
         <Route path="/extract-frame" element={<ExtractFrame />} />
         <Route path="/concat-videos" element={<ConcatVideos />} />
         <Route path="/audio-track" element={<AudioTrack />} />
+        <Route path="/qrcode" element={<QrCode />} />
+        <Route path="/images-to-pdf" element={<ImagesToPdf />} />
+        <Route path="/pdf-to-images" element={<PdfToImages />} />
+        <Route path="/rename-files" element={<RenameFiles />} />
       </Routes>
     </Layout>
   )

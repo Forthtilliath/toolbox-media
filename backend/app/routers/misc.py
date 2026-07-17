@@ -1,0 +1,56 @@
+import io
+
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
+from PIL import UnidentifiedImageError
+
+from app.routers._common import zip_response
+from app.services.misc_processing import generate_qrcode, images_to_pdf, pdf_to_images, rename_batch
+
+router = APIRouter()
+
+
+@router.post("/qrcode")
+async def qrcode_endpoint(data: str = Form(...), box_size: int = Form(10)) -> StreamingResponse:
+    output_bytes = generate_qrcode(data, box_size)
+    return StreamingResponse(io.BytesIO(output_bytes), media_type="image/png")
+
+
+@router.post("/images-to-pdf")
+async def images_to_pdf_endpoint(images: list[UploadFile] = File(...)) -> StreamingResponse:
+    images_bytes = [await img.read() for img in images]
+    try:
+        output_bytes = images_to_pdf(images_bytes)
+    except UnidentifiedImageError:
+        raise HTTPException(status_code=400, detail="Fichier image invalide")
+    return StreamingResponse(
+        io.BytesIO(output_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=images.pdf"},
+    )
+
+
+@router.post("/pdf-to-images")
+async def pdf_to_images_endpoint(file: UploadFile = File(...), dpi: int = Form(150)) -> StreamingResponse:
+    input_bytes = await file.read()
+    try:
+        pages = pdf_to_images(input_bytes, dpi)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Fichier PDF invalide")
+    if not pages:
+        raise HTTPException(status_code=400, detail="Le PDF ne contient aucune page")
+    filenames = [f"page-{i + 1:03d}.png" for i in range(len(pages))]
+    return zip_response(filenames, pages, "pdf_pages.zip")
+
+
+@router.post("/rename")
+async def rename_endpoint(
+    files: list[UploadFile] = File(...), pattern: str = Form("{name}"), start: int = Form(1)
+) -> StreamingResponse:
+    original_names = [f.filename or f"file_{i}" for i, f in enumerate(files)]
+    contents = [await f.read() for f in files]
+    try:
+        new_names = rename_batch(original_names, pattern, start)
+    except (KeyError, ValueError) as e:
+        raise HTTPException(status_code=400, detail=f"Pattern invalide: {e}")
+    return zip_response(new_names, contents, "renamed_files.zip")

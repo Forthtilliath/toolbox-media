@@ -29,6 +29,10 @@ const links = [
   { to: '/extract-frame', label: 'Extraire une frame' },
   { to: '/concat-videos', label: 'Concaténer vidéos' },
   { to: '/audio-track', label: 'Piste audio' },
+  { to: '/qrcode', label: 'QR code' },
+  { to: '/images-to-pdf', label: 'Images vers PDF' },
+  { to: '/pdf-to-images', label: 'PDF vers images' },
+  { to: '/rename-files', label: 'Renommer en lot' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {
