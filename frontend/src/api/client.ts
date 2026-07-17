@@ -320,4 +320,14 @@ export const api = {
     formData.append('start', String(start))
     return requestFile('/misc/rename', formData)
   },
+  mergePdf: (files: File[]) => {
+    const formData = new FormData()
+    files.forEach((file) => formData.append('files', file))
+    return requestFile('/misc/merge-pdf', formData)
+  },
+  compressPdf: (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return requestFile('/misc/compress-pdf', formData)
+  },
 }

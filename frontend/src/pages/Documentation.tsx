@@ -90,6 +90,8 @@ const categories: CategoryDoc[] = [
       { to: '/qrcode', label: 'QR code', description: "Génère un QR code à partir d'un texte ou d'une URL, taille des modules réglable." },
       { to: '/images-to-pdf', label: 'Images vers PDF', description: 'Assemble plusieurs images en un seul PDF multi-pages, dans l\'ordre choisi.' },
       { to: '/pdf-to-images', label: 'PDF vers images', description: 'Extrait chaque page d\'un PDF en image PNG, à une résolution (DPI) réglable.' },
+      { to: '/merge-pdf', label: 'Fusionner PDF', description: "Combine plusieurs fichiers PDF en un seul, dans l'ordre d'envoi des fichiers." },
+      { to: '/compress-pdf', label: 'Compresser PDF', description: "Réduit le poids d'un PDF (garbage collection des objets dupliqués + compression deflate des flux, images et polices)." },
       { to: '/rename-files', label: 'Renommer en lot', description: 'Renomme plusieurs fichiers selon un pattern ({n}, {n:03d}, {name}, {ext}) ; les collisions de noms sont automatiquement désambiguïsées.' },
     ],
     screenshot: { src: '/screenshots/qrcode.png', alt: 'QR code généré à partir d\'une URL' },

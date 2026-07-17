@@ -33,6 +33,26 @@ def pdf_to_images(pdf_bytes: bytes, dpi: int) -> list[bytes]:
         doc.close()
 
 
+def merge_pdfs(pdfs_bytes: list[bytes]) -> bytes:
+    merged = fitz.open()
+    try:
+        for data in pdfs_bytes:
+            doc = fitz.open(stream=data, filetype="pdf")
+            merged.insert_pdf(doc)
+            doc.close()
+        return merged.write()
+    finally:
+        merged.close()
+
+
+def compress_pdf(pdf_bytes: bytes) -> bytes:
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    try:
+        return doc.write(garbage=4, deflate=True, deflate_images=True, deflate_fonts=True)
+    finally:
+        doc.close()
+
+
 def rename_batch(filenames: list[str], pattern: str, start: int) -> list[str]:
     used: set[str] = set()
     results = []

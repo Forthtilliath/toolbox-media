@@ -167,6 +167,16 @@ const tools = [
     description: 'Extraire les pages d\'un PDF en images PNG',
   },
   {
+    to: '/merge-pdf',
+    label: 'Fusionner PDF',
+    description: 'Combiner plusieurs fichiers PDF en un seul, dans l\'ordre choisi',
+  },
+  {
+    to: '/compress-pdf',
+    label: 'Compresser PDF',
+    description: 'Réduire le poids d\'un PDF (nettoyage et compression des flux internes)',
+  },
+  {
     to: '/rename-files',
     label: 'Renommer en lot',
     description: 'Renommer plusieurs fichiers selon un pattern (numéro, nom original...)',

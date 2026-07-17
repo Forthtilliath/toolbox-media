@@ -45,6 +45,8 @@ const links = [
   { to: '/qrcode', label: 'QR code' },
   { to: '/images-to-pdf', label: 'Images vers PDF' },
   { to: '/pdf-to-images', label: 'PDF vers images' },
+  { to: '/merge-pdf', label: 'Fusionner PDF' },
+  { to: '/compress-pdf', label: 'Compresser PDF' },
   { to: '/rename-files', label: 'Renommer en lot' },
 ]
 

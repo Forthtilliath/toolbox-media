@@ -515,4 +515,23 @@ describe('misc', () => {
     expect(formData.get('pattern')).toBe('photo-{n:03d}')
     expect(formData.get('start')).toBe('5')
   })
+
+  it('mergePdf appends every file under the same field name', async () => {
+    mockFetchOk()
+    const a = file('a.pdf', 'application/pdf')
+    const b = file('b.pdf', 'application/pdf')
+    await api.mergePdf([a, b])
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/misc/merge-pdf')
+    expect(formData.getAll('files')).toEqual([a, b])
+  })
+
+  it('compressPdf posts to /misc/compress-pdf', async () => {
+    mockFetchOk()
+    const pdf = file('doc.pdf', 'application/pdf')
+    await api.compressPdf(pdf)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/misc/compress-pdf')
+    expect(formData.get('file')).toBe(pdf)
+  })
 })

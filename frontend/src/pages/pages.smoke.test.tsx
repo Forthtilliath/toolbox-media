@@ -10,6 +10,7 @@ import ColorMatch from './ColorMatch'
 import ColorPalette from './ColorPalette'
 import CompareImages from './CompareImages'
 import CompressImage from './CompressImage'
+import CompressPdf from './CompressPdf'
 import CompressVideo from './CompressVideo'
 import ConcatVideos from './ConcatVideos'
 import ContactSheet from './ContactSheet'
@@ -25,6 +26,7 @@ import Home from './Home'
 import IconPack from './IconPack'
 import ImagesToPdf from './ImagesToPdf'
 import Lqip from './Lqip'
+import MergePdf from './MergePdf'
 import PdfToImages from './PdfToImages'
 import Placeholder from './Placeholder'
 import QrCode from './QrCode'
@@ -90,6 +92,8 @@ const pages = [
   { Component: QrCode, heading: 'Générer un QR code' },
   { Component: ImagesToPdf, heading: 'Convertir des images en PDF' },
   { Component: PdfToImages, heading: "Extraire les pages d'un PDF en images" },
+  { Component: MergePdf, heading: 'Fusionner plusieurs PDF' },
+  { Component: CompressPdf, heading: 'Compresser un PDF' },
   { Component: RenameFiles, heading: 'Renommer un lot de fichiers' },
 ]
 

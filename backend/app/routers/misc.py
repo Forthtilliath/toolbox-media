@@ -5,7 +5,14 @@ from fastapi.responses import StreamingResponse
 from PIL import UnidentifiedImageError
 
 from app.routers._common import zip_response
-from app.services.misc_processing import generate_qrcode, images_to_pdf, pdf_to_images, rename_batch
+from app.services.misc_processing import (
+    compress_pdf,
+    generate_qrcode,
+    images_to_pdf,
+    merge_pdfs,
+    pdf_to_images,
+    rename_batch,
+)
 
 router = APIRouter()
 
@@ -41,6 +48,36 @@ async def pdf_to_images_endpoint(file: UploadFile = File(...), dpi: int = Form(1
         raise HTTPException(status_code=400, detail="Le PDF ne contient aucune page")
     filenames = [f"page-{i + 1:03d}.png" for i in range(len(pages))]
     return zip_response(filenames, pages, "pdf_pages.zip")
+
+
+@router.post("/merge-pdf")
+async def merge_pdf_endpoint(files: list[UploadFile] = File(...)) -> StreamingResponse:
+    if len(files) < 2:
+        raise HTTPException(status_code=400, detail="Fournir au moins 2 fichiers PDF")
+    pdfs_bytes = [await f.read() for f in files]
+    try:
+        output_bytes = merge_pdfs(pdfs_bytes)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Fichier PDF invalide")
+    return StreamingResponse(
+        io.BytesIO(output_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=merged.pdf"},
+    )
+
+
+@router.post("/compress-pdf")
+async def compress_pdf_endpoint(file: UploadFile = File(...)) -> StreamingResponse:
+    input_bytes = await file.read()
+    try:
+        output_bytes = compress_pdf(input_bytes)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Fichier PDF invalide")
+    return StreamingResponse(
+        io.BytesIO(output_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=compressed.pdf"},
+    )
 
 
 @router.post("/rename")

@@ -40,8 +40,8 @@ Idées d'outils supplémentaires pour la toolbox.
 
 ## PDF
 
-- [ ] Fusionner plusieurs PDF en un seul
-- [ ] Compresser un PDF (réduire le poids)
+- [x] Fusionner plusieurs PDF en un seul
+- [x] Compresser un PDF (réduire le poids)
 
 ## Divers
 

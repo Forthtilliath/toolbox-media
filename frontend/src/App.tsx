@@ -43,6 +43,8 @@ import Waveform from './pages/Waveform'
 import QrCode from './pages/QrCode'
 import ImagesToPdf from './pages/ImagesToPdf'
 import PdfToImages from './pages/PdfToImages'
+import MergePdf from './pages/MergePdf'
+import CompressPdf from './pages/CompressPdf'
 import RenameFiles from './pages/RenameFiles'
 
 function App() {
@@ -92,6 +94,8 @@ function App() {
         <Route path="/qrcode" element={<QrCode />} />
         <Route path="/images-to-pdf" element={<ImagesToPdf />} />
         <Route path="/pdf-to-images" element={<PdfToImages />} />
+        <Route path="/merge-pdf" element={<MergePdf />} />
+        <Route path="/compress-pdf" element={<CompressPdf />} />
         <Route path="/rename-files" element={<RenameFiles />} />
       </Routes>
     </Layout>
