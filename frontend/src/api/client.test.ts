@@ -278,6 +278,32 @@ describe('dev assets', () => {
     expect(url).toBe('/api/assets/spritesheet')
     expect(formData.getAll('images')).toEqual([a, b])
   })
+
+  it('socialFormats posts to /assets/social-formats', async () => {
+    mockFetchOk()
+    const f = file()
+    await api.socialFormats(f)
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/assets/social-formats')
+    expect(formData.get('image')).toBe(f)
+  })
+
+  it('placeholder omits text when not provided', async () => {
+    mockFetchOk()
+    await api.placeholder({ width: 400, height: 300, bgColor: 'ccc', textColor: '969696' })
+    const { url, formData } = lastCall()
+    expect(url).toBe('/api/assets/placeholder')
+    expect(formData.get('width')).toBe('400')
+    expect(formData.get('bg_color')).toBe('ccc')
+    expect(formData.has('text')).toBe(false)
+  })
+
+  it('placeholder includes text when provided', async () => {
+    mockFetchOk()
+    await api.placeholder({ width: 400, height: 300, bgColor: 'ccc', textColor: '969696', text: 'Hello' })
+    const { formData } = lastCall()
+    expect(formData.get('text')).toBe('Hello')
+  })
 })
 
 describe('svg', () => {

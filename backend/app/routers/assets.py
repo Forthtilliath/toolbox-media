@@ -11,6 +11,8 @@ from app.services.dev_assets import (
     generate_favicon_ico,
     generate_icon_pack,
     generate_lqip,
+    generate_placeholder,
+    generate_social_formats,
     generate_spritesheet,
     generate_srcset,
 )
@@ -87,3 +89,28 @@ async def spritesheet(images: list[UploadFile] = File(...)) -> StreamingResponse
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return zip_response(["sprite.png", "sprite.css"], [sprite_png, css.encode("utf-8")], "spritesheet.zip")
+
+
+@router.post("/social-formats")
+async def social_formats(image: UploadFile = File(...)) -> StreamingResponse:
+    input_bytes = await image.read()
+    try:
+        files = generate_social_formats(input_bytes)
+    except UnidentifiedImageError:
+        raise HTTPException(status_code=400, detail="Fichier image invalide")
+    return zip_response([name for name, _ in files], [data for _, data in files], "social_formats.zip")
+
+
+@router.post("/placeholder")
+async def placeholder(
+    width: int = Form(800),
+    height: int = Form(600),
+    bg_color: str = Form("cccccc"),
+    text_color: str = Form("969696"),
+    text: str | None = Form(None),
+) -> StreamingResponse:
+    try:
+        image_bytes = generate_placeholder(width, height, bg_color, text_color, text)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Couleur invalide (format hexadécimal attendu)")
+    return StreamingResponse(io.BytesIO(image_bytes), media_type="image/png")

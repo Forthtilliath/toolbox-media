@@ -27,8 +27,8 @@ Idées d'outils supplémentaires pour la toolbox.
 
 ## Images — réseaux sociaux
 
-- [ ] Générer les formats réseaux sociaux en un clic (post Instagram carré, story 9:16, bannière LinkedIn, carte Twitter/X, image OG) à partir d'une seule image source
-- [ ] Générer une image placeholder avec texte personnalisé (type placehold.co)
+- [x] Générer les formats réseaux sociaux en un clic (post Instagram carré, story 9:16, bannière LinkedIn, carte Twitter/X, image OG) à partir d'une seule image source
+- [x] Générer une image placeholder avec texte personnalisé (type placehold.co)
 
 ## Vidéo — avancé
 

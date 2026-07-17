@@ -149,6 +149,20 @@ export const api = {
     images.forEach((image) => formData.append('images', image))
     return requestFile('/assets/spritesheet', formData)
   },
+  socialFormats: (image: File) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    return requestFile('/assets/social-formats', formData)
+  },
+  placeholder: (params: { width: number; height: number; bgColor: string; textColor: string; text?: string }) => {
+    const formData = new FormData()
+    formData.append('width', String(params.width))
+    formData.append('height', String(params.height))
+    formData.append('bg_color', params.bgColor)
+    formData.append('text_color', params.textColor)
+    if (params.text) formData.append('text', params.text)
+    return requestFile('/assets/placeholder', formData)
+  },
   svgOptimize: (file: File) => {
     const formData = new FormData()
     formData.append('file', file)

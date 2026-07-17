@@ -24,6 +24,8 @@ import Base64Encode from './pages/Base64Encode'
 import Spritesheet from './pages/Spritesheet'
 import SvgOptimize from './pages/SvgOptimize'
 import SvgConvert from './pages/SvgConvert'
+import SocialFormats from './pages/SocialFormats'
+import Placeholder from './pages/Placeholder'
 import ColorPalette from './pages/ColorPalette'
 import CompareImages from './pages/CompareImages'
 import TrimVideo from './pages/TrimVideo'
@@ -66,6 +68,8 @@ function App() {
         <Route path="/spritesheet" element={<Spritesheet />} />
         <Route path="/svg-optimize" element={<SvgOptimize />} />
         <Route path="/svg-convert" element={<SvgConvert />} />
+        <Route path="/social-formats" element={<SocialFormats />} />
+        <Route path="/placeholder" element={<Placeholder />} />
         <Route path="/color-palette" element={<ColorPalette />} />
         <Route path="/compare-images" element={<CompareImages />} />
         <Route path="/trim-video" element={<TrimVideo />} />

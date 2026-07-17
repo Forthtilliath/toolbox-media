@@ -52,6 +52,8 @@ const categories: CategoryDoc[] = [
       { to: '/spritesheet', label: 'Spritesheet CSS', description: "Assemble plusieurs icônes en une seule image, avec les règles CSS background-position correspondantes." },
       { to: '/svg-optimize', label: 'Optimiser SVG', description: 'Nettoyage et minification (suppression des commentaires, raccourcissement des identifiants) via scour.' },
       { to: '/svg-convert', label: 'Convertir SVG ↔ PNG', description: 'Rasterise un SVG en PNG à une largeur donnée, ou encapsule un PNG dans un fichier SVG (pas une vraie vectorisation).' },
+      { to: '/social-formats', label: 'Formats réseaux sociaux', description: "Produit 5 recadrages à partir d'une image source : post Instagram carré (1080×1080), story 9:16 (1080×1920), bannière LinkedIn (1584×396), carte Twitter/X (1200×675) et image Open Graph (1200×630)." },
+      { to: '/placeholder', label: 'Image placeholder', description: "Génère une image de remplacement (type placehold.co) : dimensions, couleurs et texte personnalisables." },
     ],
   },
   {

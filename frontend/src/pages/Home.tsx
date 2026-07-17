@@ -88,6 +88,16 @@ const tools = [
     description: 'Rasteriser un SVG en PNG, ou encapsuler un PNG dans un SVG',
   },
   {
+    to: '/social-formats',
+    label: 'Formats réseaux sociaux',
+    description: 'Post Instagram, story, bannière LinkedIn, carte Twitter/X et image OG en un clic',
+  },
+  {
+    to: '/placeholder',
+    label: 'Image placeholder',
+    description: 'Générer une image de remplacement avec texte et couleurs personnalisées',
+  },
+  {
     to: '/color-palette',
     label: 'Palette de couleurs',
     description: "Extraire les couleurs dominantes d'une image",

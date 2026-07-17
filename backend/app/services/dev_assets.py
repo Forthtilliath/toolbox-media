@@ -3,15 +3,23 @@ import io
 import json
 import re
 
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-from app.services.image_processing import FORMAT_MEDIA_TYPES
+from app.services.image_processing import FORMAT_MEDIA_TYPES, crop_box_for_ratio
 
 ICON_SIZES = [16, 32, 48]
 PWA_SIZES = [192, 512]
 APPLE_TOUCH_SIZE = 180
 
 DEFAULT_SRCSET_WIDTHS = [320, 640, 960, 1280, 1920]
+
+SOCIAL_FORMATS = {
+    "instagram-square": (1080, 1080),
+    "instagram-story": (1080, 1920),
+    "linkedin-banner": (1584, 396),
+    "twitter-card": (1200, 675),
+    "og-image": (1200, 630),
+}
 
 
 def generate_favicon_ico(input_bytes: bytes) -> bytes:
@@ -116,3 +124,35 @@ def generate_spritesheet(images_bytes: list[bytes], filenames: list[str]) -> tup
     output = io.BytesIO()
     sprite.save(output, format="PNG")
     return output.getvalue(), "\n".join(css_rules)
+
+
+def generate_social_formats(input_bytes: bytes) -> list[tuple[str, bytes]]:
+    image = Image.open(io.BytesIO(input_bytes)).convert("RGB")
+    results = []
+    for name, (target_w, target_h) in SOCIAL_FORMATS.items():
+        box = crop_box_for_ratio(image.width, image.height, target_w / target_h)
+        resized = image.crop(box).resize((target_w, target_h), Image.LANCZOS)
+        output = io.BytesIO()
+        resized.save(output, format="JPEG", quality=90)
+        results.append((f"{name}.jpg", output.getvalue()))
+    return results
+
+
+def _parse_hex_color(value: str) -> tuple[int, int, int]:
+    value = value.lstrip("#")
+    if len(value) == 3:
+        value = "".join(c * 2 for c in value)
+    return (int(value[0:2], 16), int(value[2:4], 16), int(value[4:6], 16))
+
+
+def generate_placeholder(width: int, height: int, bg_color: str, text_color: str, text: str | None) -> bytes:
+    image = Image.new("RGB", (width, height), _parse_hex_color(bg_color))
+    draw = ImageDraw.Draw(image)
+    label = text or f"{width}x{height}"
+    font = ImageFont.load_default(size=max(12, min(width, height) // 5))
+    bbox = draw.textbbox((0, 0), label, font=font)
+    xy = ((width - (bbox[2] - bbox[0])) // 2 - bbox[0], (height - (bbox[3] - bbox[1])) // 2 - bbox[1])
+    draw.text(xy, label, font=font, fill=_parse_hex_color(text_color))
+    output = io.BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()

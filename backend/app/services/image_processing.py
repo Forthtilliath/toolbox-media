@@ -99,9 +99,7 @@ def normalize_brightness(images_bytes: list[bytes], reference_bytes: bytes | Non
     return results
 
 
-def ratio_crop_box(width: int, height: int, ratio: str) -> tuple[int, int, int, int]:
-    ratio_w, ratio_h = RATIO_PRESETS[ratio]
-    target_ratio = ratio_w / ratio_h
+def crop_box_for_ratio(width: int, height: int, target_ratio: float) -> tuple[int, int, int, int]:
     current_ratio = width / height
     if current_ratio > target_ratio:
         new_width = round(height * target_ratio)
@@ -110,6 +108,11 @@ def ratio_crop_box(width: int, height: int, ratio: str) -> tuple[int, int, int, 
     new_height = round(width / target_ratio)
     top = (height - new_height) // 2
     return (0, top, width, top + new_height)
+
+
+def ratio_crop_box(width: int, height: int, ratio: str) -> tuple[int, int, int, int]:
+    ratio_w, ratio_h = RATIO_PRESETS[ratio]
+    return crop_box_for_ratio(width, height, ratio_w / ratio_h)
 
 
 def crop_image(input_bytes: bytes, box: tuple[int, int, int, int]) -> bytes:

@@ -25,11 +25,13 @@ import IconPack from './IconPack'
 import ImagesToPdf from './ImagesToPdf'
 import Lqip from './Lqip'
 import PdfToImages from './PdfToImages'
+import Placeholder from './Placeholder'
 import QrCode from './QrCode'
 import RemoveBackground from './RemoveBackground'
 import RenameFiles from './RenameFiles'
 import ResizeImage from './ResizeImage'
 import RotateFlipImage from './RotateFlipImage'
+import SocialFormats from './SocialFormats'
 import Spritesheet from './Spritesheet'
 import Srcset from './Srcset'
 import StripExif from './StripExif'
@@ -64,6 +66,8 @@ const pages = [
   { Component: Spritesheet, heading: 'Assembler un spritesheet CSS' },
   { Component: SvgOptimize, heading: 'Optimiser un SVG' },
   { Component: SvgConvert, heading: 'Convertir SVG ↔ PNG' },
+  { Component: SocialFormats, heading: 'Générer les formats réseaux sociaux' },
+  { Component: Placeholder, heading: 'Générer une image placeholder' },
   { Component: ColorPalette, heading: 'Extraire la palette de couleurs dominante' },
   { Component: CompareImages, heading: 'Comparer deux images' },
   { Component: TrimVideo, heading: 'Couper un extrait vidéo' },
