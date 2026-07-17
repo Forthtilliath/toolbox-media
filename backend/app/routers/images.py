@@ -1,10 +1,10 @@
 import io
-import zipfile
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 from PIL import Image, UnidentifiedImageError
 
+from app.routers._common import filenames_of, zip_response
 from app.services.image_processing import (
     FORMAT_MEDIA_TYPES,
     RATIO_PRESETS,
@@ -27,23 +27,6 @@ router = APIRouter()
 def _media_type_of(data: bytes) -> str:
     fmt = (Image.open(io.BytesIO(data)).format or "").lower()
     return FORMAT_MEDIA_TYPES.get(fmt, "application/octet-stream")
-
-
-def _filenames(images: list[UploadFile]) -> list[str]:
-    return [img.filename or f"image_{i}.png" for i, img in enumerate(images)]
-
-
-def _zip_response(filenames: list[str], contents: list[bytes], download_name: str) -> StreamingResponse:
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        for filename, data in zip(filenames, contents):
-            zip_file.writestr(filename, data)
-    zip_buffer.seek(0)
-    return StreamingResponse(
-        zip_buffer,
-        media_type="application/zip",
-        headers={"Content-Disposition": f"attachment; filename={download_name}"},
-    )
 
 
 @router.post("/compress")
@@ -70,28 +53,28 @@ async def convert(image: UploadFile = File(...), target_format: str = Form(...))
 async def color_match(
     reference: UploadFile = File(...), images: list[UploadFile] = File(...)
 ) -> StreamingResponse:
-    filenames = _filenames(images)
+    filenames = filenames_of(images)
     reference_bytes = await reference.read()
     images_bytes = [await img.read() for img in images]
     try:
         results = [match_colors(reference_bytes, data) for data in images_bytes]
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
-    return _zip_response(filenames, results, "matched_images.zip")
+    return zip_response(filenames, results, "matched_images.zip")
 
 
 @router.post("/normalize-brightness")
 async def normalize_brightness_endpoint(
     images: list[UploadFile] = File(...), reference: UploadFile | None = File(None)
 ) -> StreamingResponse:
-    filenames = _filenames(images)
+    filenames = filenames_of(images)
     images_bytes = [await img.read() for img in images]
     reference_bytes = await reference.read() if reference is not None else None
     try:
         results = normalize_brightness(images_bytes, reference_bytes)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
-    return _zip_response(filenames, results, "normalized_images.zip")
+    return zip_response(filenames, results, "normalized_images.zip")
 
 
 @router.post("/crop")
@@ -168,14 +151,14 @@ async def watermark(
         raise HTTPException(status_code=400, detail="Fournir un texte ou un logo")
     if position not in WATERMARK_POSITIONS:
         raise HTTPException(status_code=400, detail=f"Position inconnue: {position}")
-    filenames = _filenames(images)
+    filenames = filenames_of(images)
     images_bytes = [await img.read() for img in images]
     logo_bytes = await logo.read() if logo is not None else None
     try:
         results = add_watermark(images_bytes, text, logo_bytes, opacity, position)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
-    return _zip_response(filenames, results, "watermarked_images.zip")
+    return zip_response(filenames, results, "watermarked_images.zip")
 
 
 @router.post("/adjust")
@@ -185,10 +168,10 @@ async def adjust(
     contrast: float = Form(1.0),
     saturation: float = Form(1.0),
 ) -> StreamingResponse:
-    filenames = _filenames(images)
+    filenames = filenames_of(images)
     images_bytes = [await img.read() for img in images]
     try:
         results = adjust_batch(images_bytes, brightness, contrast, saturation)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
-    return _zip_response(filenames, results, "adjusted_images.zip")
+    return zip_response(filenames, results, "adjusted_images.zip")

@@ -35,6 +35,37 @@ const tools = [
     label: 'Luminosité / contraste / saturation',
     description: "Ajuster manuellement un lot de photos avec les mêmes réglages",
   },
+  {
+    to: '/icon-pack',
+    label: 'Favicon / pack icônes',
+    description: 'Générer favicon.ico ou un pack complet (apple-touch-icon, PWA, manifest.json)',
+  },
+  {
+    to: '/srcset',
+    label: 'Srcset responsive',
+    description: "Générer plusieurs tailles d'une image pour l'attribut srcset",
+  },
+  {
+    to: '/lqip',
+    label: 'Placeholder flou (LQIP)',
+    description: 'Générer une mini image floutée en data URI pour le lazy loading',
+  },
+  {
+    to: '/base64-encode',
+    label: 'Encoder en base64',
+    description: 'Convertir une image en data URI pour inline CSS/HTML',
+  },
+  {
+    to: '/spritesheet',
+    label: 'Spritesheet CSS',
+    description: 'Assembler plusieurs icônes en une image + CSS associé',
+  },
+  { to: '/svg-optimize', label: 'Optimiser SVG', description: 'Nettoyer et minifier un fichier SVG' },
+  {
+    to: '/svg-convert',
+    label: 'Convertir SVG/PNG',
+    description: 'Rasteriser un SVG en PNG, ou encapsuler un PNG dans un SVG',
+  },
   { to: '/trim-video', label: 'Couper vidéo', description: "Extraire un passage d'une vidéo" },
   { to: '/video-to-gif', label: 'Vidéo -> GIF', description: 'Transformer un extrait vidéo en GIF' },
 ]

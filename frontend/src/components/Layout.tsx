@@ -13,6 +13,13 @@ const links = [
   { to: '/rotate-flip-image', label: 'Pivoter / retourner' },
   { to: '/watermark', label: 'Filigrane' },
   { to: '/adjust-images', label: 'Luminosité/contraste/saturation' },
+  { to: '/icon-pack', label: 'Favicon / pack icônes' },
+  { to: '/srcset', label: 'Srcset responsive' },
+  { to: '/lqip', label: 'Placeholder flou (LQIP)' },
+  { to: '/base64-encode', label: 'Encoder en base64' },
+  { to: '/spritesheet', label: 'Spritesheet CSS' },
+  { to: '/svg-optimize', label: 'Optimiser SVG' },
+  { to: '/svg-convert', label: 'Convertir SVG/PNG' },
   { to: '/trim-video', label: 'Couper vidéo' },
   { to: '/video-to-gif', label: 'Vidéo -> GIF' },
 ]

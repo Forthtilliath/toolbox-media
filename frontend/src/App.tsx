@@ -11,6 +11,13 @@ import ResizeImage from './pages/ResizeImage'
 import RotateFlipImage from './pages/RotateFlipImage'
 import Watermark from './pages/Watermark'
 import AdjustImages from './pages/AdjustImages'
+import IconPack from './pages/IconPack'
+import Srcset from './pages/Srcset'
+import Lqip from './pages/Lqip'
+import Base64Encode from './pages/Base64Encode'
+import Spritesheet from './pages/Spritesheet'
+import SvgOptimize from './pages/SvgOptimize'
+import SvgConvert from './pages/SvgConvert'
 import TrimVideo from './pages/TrimVideo'
 import VideoToGif from './pages/VideoToGif'
 
@@ -29,6 +36,13 @@ function App() {
         <Route path="/rotate-flip-image" element={<RotateFlipImage />} />
         <Route path="/watermark" element={<Watermark />} />
         <Route path="/adjust-images" element={<AdjustImages />} />
+        <Route path="/icon-pack" element={<IconPack />} />
+        <Route path="/srcset" element={<Srcset />} />
+        <Route path="/lqip" element={<Lqip />} />
+        <Route path="/base64-encode" element={<Base64Encode />} />
+        <Route path="/spritesheet" element={<Spritesheet />} />
+        <Route path="/svg-optimize" element={<SvgOptimize />} />
+        <Route path="/svg-convert" element={<SvgConvert />} />
         <Route path="/trim-video" element={<TrimVideo />} />
         <Route path="/video-to-gif" element={<VideoToGif />} />
       </Routes>

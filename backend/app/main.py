@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from app.routers import background, images, videos
+from app.routers import assets, background, images, svg, videos
 
 app = FastAPI(title="Toolbox Media API")
 
@@ -32,6 +32,8 @@ app.add_middleware(
 
 app.include_router(background.router, prefix="/api/background", tags=["background"])
 app.include_router(images.router, prefix="/api/images", tags=["images"])
+app.include_router(assets.router, prefix="/api/assets", tags=["assets"])
+app.include_router(svg.router, prefix="/api/svg", tags=["svg"])
 app.include_router(videos.router, prefix="/api/videos", tags=["videos"])
 
 

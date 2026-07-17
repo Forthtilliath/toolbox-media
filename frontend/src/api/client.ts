@@ -1,22 +1,37 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api'
 
+async function readErrorMessage(response: Response): Promise<string> {
+  const text = await response.text()
+  let message = text || `Erreur ${response.status}`
+  try {
+    const data = JSON.parse(text) as { detail?: string }
+    if (data.detail) message = data.detail
+  } catch {
+    // Not JSON (e.g. an HTML error page from a proxy) — keep the raw text.
+  }
+  return message
+}
+
 async function requestFile(path: string, formData: FormData): Promise<Blob> {
   const response = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
     body: formData,
   })
   if (!response.ok) {
-    const text = await response.text()
-    let message = text || `Erreur ${response.status}`
-    try {
-      const data = JSON.parse(text) as { detail?: string }
-      if (data.detail) message = data.detail
-    } catch {
-      // Not JSON (e.g. an HTML error page from a proxy) — keep the raw text.
-    }
-    throw new Error(message)
+    throw new Error(await readErrorMessage(response))
   }
   return response.blob()
+}
+
+async function requestJson<T>(path: string, formData: FormData): Promise<T> {
+  const response = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    body: formData,
+  })
+  if (!response.ok) {
+    throw new Error(await readErrorMessage(response))
+  }
+  return response.json() as Promise<T>
 }
 
 export const api = {
@@ -101,6 +116,49 @@ export const api = {
     formData.append('contrast', String(contrast))
     formData.append('saturation', String(saturation))
     return requestFile('/images/adjust', formData)
+  },
+  favicon: (image: File) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    return requestFile('/assets/favicon', formData)
+  },
+  iconPack: (image: File) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    return requestFile('/assets/icon-pack', formData)
+  },
+  srcset: (image: File, widths: number[]) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    formData.append('widths', widths.join(','))
+    return requestFile('/assets/srcset', formData)
+  },
+  lqip: (image: File) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    return requestJson<{ data_uri: string }>('/assets/lqip', formData)
+  },
+  base64Encode: (image: File) => {
+    const formData = new FormData()
+    formData.append('image', image)
+    return requestJson<{ data_uri: string }>('/assets/base64', formData)
+  },
+  spritesheet: (images: File[]) => {
+    const formData = new FormData()
+    images.forEach((image) => formData.append('images', image))
+    return requestFile('/assets/spritesheet', formData)
+  },
+  svgOptimize: (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return requestFile('/svg/optimize', formData)
+  },
+  svgConvert: (file: File, direction: 'svg-to-png' | 'png-to-svg', width?: number) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('direction', direction)
+    if (width !== undefined) formData.append('width', String(width))
+    return requestFile('/svg/convert', formData)
   },
   trimVideo: (video: File, start: number, end: number) => {
     const formData = new FormData()

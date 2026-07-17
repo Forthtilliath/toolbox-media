@@ -12,15 +12,15 @@ Idées d'outils supplémentaires pour la toolbox, en plus des 6 outils déjà im
 
 ## Images — assets pour le dev
 
-- [ ] Générer un favicon.ico multi-résolution (16x16, 32x32, 48x48) depuis une image source
-- [ ] Générer un pack d'icônes complet (favicon.ico, apple-touch-icon, icônes PWA 192/512, manifest.json) depuis une seule image source
-- [ ] Convertir en WebP / AVIF (formats modernes, en complément de jpeg/png/webp déjà couverts)
-- [ ] Générer un jeu d'images responsive (srcset : plusieurs tailles à partir d'une image source)
-- [ ] Générer un placeholder flou (LQIP / blurhash) pour le lazy loading
-- [ ] Encoder une image en base64 (data URI) pour inline CSS/HTML
-- [ ] Assembler un spritesheet CSS depuis plusieurs icônes
-- [ ] Optimiser un SVG (nettoyage, minification — type SVGO)
-- [ ] Convertir SVG ↔ PNG/raster
+- [x] Générer un favicon.ico multi-résolution (16x16, 32x32, 48x48) depuis une image source
+- [x] Générer un pack d'icônes complet (favicon.ico, apple-touch-icon, icônes PWA 192/512, manifest.json) depuis une seule image source
+- [x] Convertir en WebP / AVIF (formats modernes, en complément de jpeg/png/webp déjà couverts)
+- [x] Générer un jeu d'images responsive (srcset : plusieurs tailles à partir d'une image source)
+- [x] Générer un placeholder flou (LQIP / blurhash) pour le lazy loading
+- [x] Encoder une image en base64 (data URI) pour inline CSS/HTML
+- [x] Assembler un spritesheet CSS depuis plusieurs icônes
+- [x] Optimiser un SVG (nettoyage, minification — type SVGO)
+- [x] Convertir SVG ↔ PNG/raster
 
 ## Images — analyse
 

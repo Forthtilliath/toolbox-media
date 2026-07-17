@@ -1,6 +1,7 @@
 import io
 
 import numpy as np
+import pillow_avif  # noqa: F401  (registers the AVIF codec with Pillow)
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
 from skimage.color import lab2rgb, rgb2lab
 from skimage.exposure import match_histograms
@@ -14,6 +15,7 @@ FORMAT_MEDIA_TYPES = {
     "jpg": "image/jpeg",
     "png": "image/png",
     "webp": "image/webp",
+    "avif": "image/avif",
 }
 
 
