@@ -1,45 +1,52 @@
 # Backlog — Outils à ajouter
 
-Idées d'outils supplémentaires pour la toolbox, en plus des 6 outils déjà implémentés (remove bg, uniformiser teintes, compresser image, convertir format, couper vidéo, vidéo → gif).
+Idées d'outils supplémentaires pour la toolbox.
 
-## Images — édition
+## Historique (terminé)
 
-- [x] Rogner une image (crop libre + ratios prédéfinis 1:1, 4:3, 16:9)
-- [x] Redimensionner une image (dimensions fixes ou %, avec/sans conservation du ratio)
-- [x] Pivoter / retourner une image (rotation, flip horizontal/vertical)
-- [x] Ajouter un filigrane (texte ou logo) sur un lot d'images
-- [x] Ajuster luminosité / contraste / saturation en lot
+<details>
+<summary>Vague 1 — 24 outils (toutes catégories cochées, voir git log)</summary>
 
-## Images — assets pour le dev
+- Images — édition : rogner, redimensionner, pivoter/retourner, filigrane, luminosité/contraste/saturation en lot
+- Images — assets pour le dev : favicon.ico, pack d'icônes PWA, WebP/AVIF, srcset, LQIP, base64, spritesheet, optimisation SVG, conversion SVG/PNG
+- Images — analyse : palette de couleurs dominante, comparaison visuelle de deux images
+- Vidéo : conversion de format, compression, extraction de frame, concaténation, gestion de la piste audio
+- Divers : QR code, images ↔ PDF, renommage en lot
 
-- [x] Générer un favicon.ico multi-résolution (16x16, 32x32, 48x48) depuis une image source
-- [x] Générer un pack d'icônes complet (favicon.ico, apple-touch-icon, icônes PWA 192/512, manifest.json) depuis une seule image source
-- [x] Convertir en WebP / AVIF (formats modernes, en complément de jpeg/png/webp déjà couverts)
-- [x] Générer un jeu d'images responsive (srcset : plusieurs tailles à partir d'une image source)
-- [x] Générer un placeholder flou (LQIP / blurhash) pour le lazy loading
-- [x] Encoder une image en base64 (data URI) pour inline CSS/HTML
-- [x] Assembler un spritesheet CSS depuis plusieurs icônes
-- [x] Optimiser un SVG (nettoyage, minification — type SVGO)
-- [x] Convertir SVG ↔ PNG/raster
+</details>
 
-## Images — analyse
+## Images — avancé
 
-- [x] Extraire la palette de couleurs dominante d'une image
-- [x] Comparer deux images (diff visuel, utile pour de la review de design)
+- [ ] Supprimer les métadonnées EXIF d'une image (vie privée avant partage)
+- [ ] Extraire les métadonnées EXIF (date, appareil, position GPS...)
+- [ ] Convertir HEIC/HEIF (photos iPhone) vers JPEG/PNG
+- [ ] Redresser une image (correction de perspective / inclinaison)
+- [ ] Réduire le bruit d'une image (denoise)
+- [ ] Générer une planche contact (grille de miniatures à partir d'un lot de photos)
+- [ ] Détourage précis avec alpha matting (bords fins : cheveux, fourrure...)
 
-## Vidéo
+## Images — réseaux sociaux
 
-- [x] Convertir un format vidéo (mp4 ↔ webm, etc.)
-- [x] Compresser une vidéo (ajuster bitrate/résolution cible)
-- [x] Extraire une frame/thumbnail à un timestamp donné
-- [x] Concaténer plusieurs extraits vidéo bout à bout
-- [x] Ajouter/retirer la piste audio d'une vidéo
+- [ ] Générer les formats réseaux sociaux en un clic (post Instagram carré, story 9:16, bannière LinkedIn, carte Twitter/X, image OG) à partir d'une seule image source
+- [ ] Générer une image placeholder avec texte personnalisé (type placehold.co)
+
+## Vidéo — avancé
+
+- [ ] Extraire la piste audio d'une vidéo en fichier séparé (mp3/wav)
+- [ ] Accélérer / ralentir une vidéo
+- [ ] Incruster des sous-titres (fichier .srt) dans une vidéo
+- [ ] Générer une boucle vidéo parfaite (avec cross-fade)
+- [ ] Générer une visualisation waveform de la piste audio
+
+## PDF
+
+- [ ] Fusionner plusieurs PDF en un seul
+- [ ] Compresser un PDF (réduire le poids)
 
 ## Divers
 
-- [x] Générer un QR code
-- [x] Convertir des images en PDF / extraire les pages d'un PDF en images
-- [x] Renommer un lot de fichiers selon un pattern
+- [ ] Calculer le hash d'un fichier (MD5/SHA-256)
+- [ ] Vérifier le contraste de deux couleurs (accessibilité WCAG)
 
 ---
 
