@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -5,7 +7,24 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.routers import advanced, analysis, assets, background, images, misc, svg, videos
 
+logger = logging.getLogger("toolbox_media")
+logging.basicConfig(level=logging.INFO)
+
 app = FastAPI(title="Toolbox Media API")
+
+# Matches the frontend's MAX_FILE_BYTES (src/api/client.ts) — the client already
+# rejects oversized files before sending, this is the server-side backstop for
+# any other caller (curl, a future mobile client, a client running an old build).
+MAX_UPLOAD_BYTES = 500 * 1024 * 1024
+
+
+class MaxBodySizeMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        content_length = request.headers.get("content-length")
+        if content_length is not None and int(content_length) > MAX_UPLOAD_BYTES:
+            max_mb = MAX_UPLOAD_BYTES // (1024 * 1024)
+            return JSONResponse(status_code=413, content={"detail": f"Fichier trop volumineux (max {max_mb} Mo)"})
+        return await call_next(request)
 
 
 class CatchAllExceptionMiddleware(BaseHTTPMiddleware):
@@ -19,9 +38,11 @@ class CatchAllExceptionMiddleware(BaseHTTPMiddleware):
         try:
             return await call_next(request)
         except Exception as exc:
+            logger.exception("Unhandled exception processing %s %s", request.method, request.url.path)
             return JSONResponse(status_code=500, content={"detail": str(exc)})
 
 
+app.add_middleware(MaxBodySizeMiddleware)
 app.add_middleware(CatchAllExceptionMiddleware)
 app.add_middleware(
     CORSMiddleware,
