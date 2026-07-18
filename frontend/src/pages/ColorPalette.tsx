@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
+import { Slider } from '@forthtilliath/shadcn-ui/components/slider'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 
@@ -32,35 +37,29 @@ export default function ColorPalette() {
   return (
     <section>
       <h2>Extraire la palette de couleurs dominante</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Nombre de couleurs : {numColors}
-          <input
-            type="range"
-            min={2}
-            max={10}
-            value={numColors}
-            onChange={(e) => setNumColors(Number(e.target.value))}
-          />
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Extraire'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <Field label={`Nombre de couleurs : ${numColors}`}>
+          <Slider min={2} max={10} value={[numColors]} onValueChange={([value]) => setNumColors(value)} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Extraire
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       {colors && (
-        <div className="result-panel">
+        <div className="mt-4 flex flex-col gap-3">
           {colors.map((color) => (
-            <div key={color.hex} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div key={color.hex} className="flex items-center gap-3">
               <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 6,
-                  background: color.hex,
-                  border: '1px solid rgba(128,128,128,0.4)',
-                }}
+                className="size-10 shrink-0 rounded-md border"
+                style={{ backgroundColor: color.hex, borderColor: 'rgba(128,128,128,0.4)' }}
               />
               <span>
                 {color.hex} — {color.percentage}%

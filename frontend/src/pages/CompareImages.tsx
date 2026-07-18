@@ -1,3 +1,7 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 
@@ -28,24 +32,26 @@ export default function CompareImages() {
   return (
     <section>
       <h2>Comparer deux images</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Image A
-          <input type="file" accept="image/*" onChange={(e) => setImageA(e.target.files?.[0] ?? null)} />
-        </label>
-        <label>
-          Image B
-          <input type="file" accept="image/*" onChange={(e) => setImageB(e.target.files?.[0] ?? null)} />
-        </label>
-        <button type="submit" disabled={!imageA || !imageB || loading}>
-          {loading ? 'Traitement...' : 'Comparer'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image A">
+          <ImageInput onFileChange={setImageA} />
+        </Field>
+        <Field label="Image B">
+          <ImageInput onFileChange={setImageB} />
+        </Field>
+        <Button type="submit" disabled={!imageA || !imageB} loading={loading} className="self-start">
+          Comparer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       {dataUri && similarity !== null && (
-        <div className="result-panel">
+        <div className="mt-4 flex flex-col items-start gap-3">
           <p>Similarité : {(similarity * 100).toFixed(1)}%</p>
-          <img src={dataUri} alt="Différences (zones rouges = différentes)" />
+          <img src={dataUri} alt="Différences (zones rouges = différentes)" className="rounded-lg border" />
         </div>
       )}
     </section>
