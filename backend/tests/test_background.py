@@ -17,3 +17,11 @@ def test_remove_background_alpha_matting(client, jpeg_bytes):
     )
     assert response.status_code == 200
     assert response.headers["content-type"] == "image/png"
+
+
+def test_remove_background_invalid_image(client):
+    response = client.post(
+        "/api/background/remove",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+    )
+    assert response.status_code == 400

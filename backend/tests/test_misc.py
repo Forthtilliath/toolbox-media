@@ -14,6 +14,19 @@ def test_qrcode(client):
     assert response.headers["content-type"] == "image/png"
 
 
+def test_qrcode_invalid_box_size(client):
+    response = client.post(
+        "/api/misc/qrcode",
+        data={"data": "https://example.com", "box_size": "0"},
+    )
+    assert response.status_code == 400
+
+
+def test_qrcode_missing_data(client):
+    response = client.post("/api/misc/qrcode", data={})
+    assert response.status_code == 422
+
+
 def test_images_to_pdf(client, jpeg_bytes, png_rgba_bytes):
     response = client.post(
         "/api/misc/images-to-pdf",
@@ -25,6 +38,14 @@ def test_images_to_pdf(client, jpeg_bytes, png_rgba_bytes):
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/pdf"
     assert response.content.startswith(b"%PDF")
+
+
+def test_images_to_pdf_invalid_image(client):
+    response = client.post(
+        "/api/misc/images-to-pdf",
+        files=[("images", ("bad.jpg", b"not an image", "image/jpeg"))],
+    )
+    assert response.status_code == 400
 
 
 def test_pdf_to_images(client, pdf_bytes):
@@ -72,6 +93,15 @@ def test_rename_collision_gets_disambiguated(client, jpeg_bytes, png_rgba_bytes)
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content))
     assert set(zf.namelist()) == {"cover.jpg", "cover-2.jpg"}
+
+
+def test_rename_invalid_pattern(client, jpeg_bytes):
+    response = client.post(
+        "/api/misc/rename",
+        files=[("files", ("a.jpg", jpeg_bytes, "image/jpeg"))],
+        data={"pattern": "{bogus}"},
+    )
+    assert response.status_code == 400
 
 
 def test_merge_pdf(client, pdf_bytes):
@@ -127,6 +157,11 @@ def test_hash(client):
     body = response.json()
     assert body["md5"] == hashlib.md5(data).hexdigest()
     assert body["sha256"] == hashlib.sha256(data).hexdigest()
+
+
+def test_hash_missing_file(client):
+    response = client.post("/api/misc/hash")
+    assert response.status_code == 422
 
 
 def test_contrast_black_white(client):

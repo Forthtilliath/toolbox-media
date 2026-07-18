@@ -8,6 +8,15 @@ def test_trim(client, video_clip_bytes):
     assert response.headers["content-type"] == "video/mp4"
 
 
+def test_trim_invalid_video(client):
+    response = client.post(
+        "/api/videos/trim",
+        files={"video": ("bad.mp4", b"not a video", "video/mp4")},
+        data={"start": "0", "end": "1"},
+    )
+    assert response.status_code == 400
+
+
 def test_to_gif(client, video_clip_bytes):
     response = client.post(
         "/api/videos/to-gif",
@@ -16,6 +25,15 @@ def test_to_gif(client, video_clip_bytes):
     )
     assert response.status_code == 200
     assert response.headers["content-type"] == "image/gif"
+
+
+def test_to_gif_invalid_video(client):
+    response = client.post(
+        "/api/videos/to-gif",
+        files={"video": ("bad.mp4", b"not a video", "video/mp4")},
+        data={"duration": "1"},
+    )
+    assert response.status_code == 400
 
 
 def test_convert(client, video_clip_bytes):
@@ -63,6 +81,14 @@ def test_extract_frame(client, video_clip_bytes):
     )
     assert response.status_code == 200
     assert response.headers["content-type"] == "image/png"
+
+
+def test_extract_frame_invalid_video(client):
+    response = client.post(
+        "/api/videos/extract-frame",
+        files={"video": ("bad.mp4", b"not a video", "video/mp4")},
+    )
+    assert response.status_code == 400
 
 
 def test_concat(client, video_clip_bytes, video_clip2_bytes):
@@ -196,6 +222,18 @@ def test_subtitles(client, video_clip_bytes):
     assert response.headers["content-type"] == "video/mp4"
 
 
+def test_subtitles_invalid_video(client):
+    srt = b"1\n00:00:00,000 --> 00:00:01,000\nHello\n"
+    response = client.post(
+        "/api/videos/subtitles",
+        files={
+            "video": ("bad.mp4", b"not a video", "video/mp4"),
+            "srt": ("subs.srt", srt, "text/plain"),
+        },
+    )
+    assert response.status_code == 400
+
+
 def test_loop(client, video_clip_bytes):
     response = client.post(
         "/api/videos/loop",
@@ -204,6 +242,14 @@ def test_loop(client, video_clip_bytes):
     )
     assert response.status_code == 200
     assert response.headers["content-type"] == "video/mp4"
+
+
+def test_loop_invalid_video(client):
+    response = client.post(
+        "/api/videos/loop",
+        files={"video": ("bad.mp4", b"not a video", "video/mp4")},
+    )
+    assert response.status_code == 400
 
 
 def test_waveform(client, video_clip_bytes):

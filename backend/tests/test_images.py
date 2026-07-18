@@ -55,6 +55,15 @@ def test_convert_heic_to_jpeg(client, heic_bytes):
     assert Image.open(io.BytesIO(response.content)).format == "JPEG"
 
 
+def test_convert_invalid_image(client):
+    response = client.post(
+        "/api/images/convert",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+        data={"target_format": "png"},
+    )
+    assert response.status_code == 400
+
+
 def test_color_match(client, jpeg_bytes, png_rgba_bytes):
     response = client.post(
         "/api/images/color-match",
@@ -67,6 +76,17 @@ def test_color_match(client, jpeg_bytes, png_rgba_bytes):
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content))
     assert set(zf.namelist()) == {"a.jpg", "b.png"}
+
+
+def test_color_match_invalid_image(client, jpeg_bytes):
+    response = client.post(
+        "/api/images/color-match",
+        files=[
+            ("reference", ("ref.jpg", jpeg_bytes, "image/jpeg")),
+            ("images", ("bad.jpg", b"not an image", "image/jpeg")),
+        ],
+    )
+    assert response.status_code == 400
 
 
 def test_normalize_brightness_average(client, jpeg_bytes, png_rgba_bytes):
@@ -91,6 +111,14 @@ def test_normalize_brightness_reference(client, jpeg_bytes, png_rgba_bytes):
         ],
     )
     assert response.status_code == 200
+
+
+def test_normalize_brightness_invalid_image(client):
+    response = client.post(
+        "/api/images/normalize-brightness",
+        files=[("images", ("bad.jpg", b"not an image", "image/jpeg"))],
+    )
+    assert response.status_code == 400
 
 
 def test_crop_ratio(client, jpeg_bytes):
@@ -160,6 +188,15 @@ def test_flip_horizontal(client, jpeg_bytes):
     assert Image.open(io.BytesIO(response.content)).size == (120, 80)
 
 
+def test_rotate_flip_invalid_image(client):
+    response = client.post(
+        "/api/images/rotate-flip",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+        data={"angle": "90"},
+    )
+    assert response.status_code == 400
+
+
 def test_watermark_text(client, jpeg_bytes, png_rgba_bytes):
     response = client.post(
         "/api/images/watermark",
@@ -203,3 +240,12 @@ def test_adjust(client, jpeg_bytes, png_rgba_bytes):
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content))
     assert set(zf.namelist()) == {"a.jpg", "b.png"}
+
+
+def test_adjust_invalid_image(client):
+    response = client.post(
+        "/api/images/adjust",
+        files=[("images", ("bad.jpg", b"not an image", "image/jpeg"))],
+        data={"brightness": "1.5", "contrast": "1.0", "saturation": "1.0"},
+    )
+    assert response.status_code == 400

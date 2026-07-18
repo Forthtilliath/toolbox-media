@@ -60,6 +60,10 @@ async def denoise_endpoint(image: UploadFile = File(...), strength: int = Form(1
 async def contact_sheet_endpoint(
     images: list[UploadFile] = File(...), columns: int = Form(4), thumb_size: int = Form(200)
 ) -> StreamingResponse:
+    if columns < 1:
+        raise HTTPException(status_code=400, detail="columns doit être supérieur ou égal à 1")
+    if thumb_size < 1:
+        raise HTTPException(status_code=400, detail="thumb_size doit être supérieur ou égal à 1")
     images_bytes = [await img.read() for img in images]
     try:
         sheet_bytes = generate_contact_sheet(images_bytes, columns, thumb_size)

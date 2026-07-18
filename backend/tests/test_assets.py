@@ -13,6 +13,14 @@ def test_favicon(client, small_icon_bytes):
     assert response.headers["content-type"] == "image/x-icon"
 
 
+def test_favicon_invalid_image(client):
+    response = client.post(
+        "/api/assets/favicon",
+        files={"image": ("bad.png", b"not an image", "image/png")},
+    )
+    assert response.status_code == 400
+
+
 def test_icon_pack(client, small_icon_bytes):
     response = client.post(
         "/api/assets/icon-pack",
@@ -27,6 +35,14 @@ def test_icon_pack(client, small_icon_bytes):
         "icon-512x512.png",
         "manifest.json",
     }
+
+
+def test_icon_pack_invalid_image(client):
+    response = client.post(
+        "/api/assets/icon-pack",
+        files={"image": ("bad.png", b"not an image", "image/png")},
+    )
+    assert response.status_code == 400
 
 
 def test_srcset(client, jpeg_bytes):
@@ -53,6 +69,15 @@ def test_srcset_invalid_widths(client, jpeg_bytes):
     assert response.status_code == 400
 
 
+def test_srcset_zero_width(client, jpeg_bytes):
+    response = client.post(
+        "/api/assets/srcset",
+        files={"image": ("photo.jpg", jpeg_bytes, "image/jpeg")},
+        data={"widths": "0"},
+    )
+    assert response.status_code == 400
+
+
 def test_lqip(client, jpeg_bytes):
     response = client.post(
         "/api/assets/lqip",
@@ -62,6 +87,14 @@ def test_lqip(client, jpeg_bytes):
     assert response.json()["data_uri"].startswith("data:image/jpeg;base64,")
 
 
+def test_lqip_invalid_image(client):
+    response = client.post(
+        "/api/assets/lqip",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+    )
+    assert response.status_code == 400
+
+
 def test_base64(client, small_icon_bytes):
     response = client.post(
         "/api/assets/base64",
@@ -69,6 +102,14 @@ def test_base64(client, small_icon_bytes):
     )
     assert response.status_code == 200
     assert response.json()["data_uri"].startswith("data:image/png;base64,")
+
+
+def test_base64_invalid_image(client):
+    response = client.post(
+        "/api/assets/base64",
+        files={"image": ("bad.png", b"not an image", "image/png")},
+    )
+    assert response.status_code == 400
 
 
 def test_spritesheet(client, small_icon_bytes, png_rgba_bytes):
@@ -82,6 +123,14 @@ def test_spritesheet(client, small_icon_bytes, png_rgba_bytes):
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content))
     assert set(zf.namelist()) == {"sprite.png", "sprite.css"}
+
+
+def test_spritesheet_invalid_image(client):
+    response = client.post(
+        "/api/assets/spritesheet",
+        files=[("images", ("bad.png", b"not an image", "image/png"))],
+    )
+    assert response.status_code == 400
 
 
 def test_social_formats(client, jpeg_bytes):
@@ -100,6 +149,14 @@ def test_social_formats(client, jpeg_bytes):
     }
     assert Image.open(io.BytesIO(zf.read("instagram-square.jpg"))).size == (1080, 1080)
     assert Image.open(io.BytesIO(zf.read("linkedin-banner.jpg"))).size == (1584, 396)
+
+
+def test_social_formats_invalid_image(client):
+    response = client.post(
+        "/api/assets/social-formats",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+    )
+    assert response.status_code == 400
 
 
 def test_placeholder_default_size(client):
@@ -125,5 +182,13 @@ def test_placeholder_invalid_color(client):
     response = client.post(
         "/api/assets/placeholder",
         data={"bg_color": "notacolor"},
+    )
+    assert response.status_code == 400
+
+
+def test_placeholder_invalid_size(client):
+    response = client.post(
+        "/api/assets/placeholder",
+        data={"width": "0", "height": "100"},
     )
     assert response.status_code == 400

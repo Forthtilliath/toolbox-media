@@ -21,6 +21,8 @@ router = APIRouter()
 
 @router.post("/qrcode")
 async def qrcode_endpoint(data: str = Form(...), box_size: int = Form(10)) -> StreamingResponse:
+    if box_size < 1:
+        raise HTTPException(status_code=400, detail="box_size doit être supérieur à 0")
     output_bytes = generate_qrcode(data, box_size)
     return StreamingResponse(io.BytesIO(output_bytes), media_type="image/png")
 

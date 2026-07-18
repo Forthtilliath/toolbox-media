@@ -29,9 +29,8 @@ def _probe_video_info(path: str) -> tuple[int, int, float]:
         ],
         check=True,
         capture_output=True,
-        text=True,
     )
-    width_str, height_str, fps_str = result.stdout.strip().split(",")
+    width_str, height_str, fps_str = result.stdout.decode().strip().split(",")
     num, den = fps_str.split("/")
     fps = float(num) / float(den) if float(den) else float(num)
     return int(width_str), int(height_str), fps
@@ -51,9 +50,8 @@ def _probe_duration(path: str) -> float:
         ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path],
         check=True,
         capture_output=True,
-        text=True,
     )
-    return float(result.stdout.strip())
+    return float(result.stdout.decode().strip())
 
 
 def trim_video(input_bytes: bytes, start: float, end: float, suffix: str) -> str:

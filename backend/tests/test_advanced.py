@@ -15,6 +15,14 @@ def test_strip_exif(client, jpeg_with_exif_bytes):
     assert not stripped.getexif()
 
 
+def test_strip_exif_invalid_image(client):
+    response = client.post(
+        "/api/advanced/strip-exif",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+    )
+    assert response.status_code == 400
+
+
 def test_extract_exif(client, jpeg_with_exif_bytes):
     response = client.post(
         "/api/advanced/extract-exif",
@@ -35,6 +43,14 @@ def test_extract_exif_no_metadata(client, jpeg_bytes):
     assert response.json()["metadata"] == {}
 
 
+def test_extract_exif_invalid_image(client):
+    response = client.post(
+        "/api/advanced/extract-exif",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+    )
+    assert response.status_code == 400
+
+
 def test_deskew(client, tilted_jpeg_bytes):
     response = client.post(
         "/api/advanced/deskew",
@@ -51,6 +67,14 @@ def test_deskew(client, tilted_jpeg_bytes):
     assert abs(angle) < 2  # corrected close to horizontal
 
 
+def test_deskew_invalid_image(client):
+    response = client.post(
+        "/api/advanced/deskew",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+    )
+    assert response.status_code == 400
+
+
 def test_denoise(client, jpeg_bytes):
     response = client.post(
         "/api/advanced/denoise",
@@ -59,6 +83,14 @@ def test_denoise(client, jpeg_bytes):
     )
     assert response.status_code == 200
     assert response.headers["content-type"] == "image/jpeg"
+
+
+def test_denoise_invalid_image(client):
+    response = client.post(
+        "/api/advanced/denoise",
+        files={"image": ("bad.jpg", b"not an image", "image/jpeg")},
+    )
+    assert response.status_code == 400
 
 
 def test_contact_sheet(client, jpeg_bytes, png_rgba_bytes):
@@ -73,3 +105,20 @@ def test_contact_sheet(client, jpeg_bytes, png_rgba_bytes):
     assert response.status_code == 200
     # 2 columns x 1 row of 100px thumbs with a 10px margin: 2*100+3*10, 1*100+2*10
     assert Image.open(io.BytesIO(response.content)).size == (230, 120)
+
+
+def test_contact_sheet_invalid_image(client):
+    response = client.post(
+        "/api/advanced/contact-sheet",
+        files=[("images", ("bad.jpg", b"not an image", "image/jpeg"))],
+    )
+    assert response.status_code == 400
+
+
+def test_contact_sheet_invalid_columns(client, jpeg_bytes):
+    response = client.post(
+        "/api/advanced/contact-sheet",
+        files=[("images", ("a.jpg", jpeg_bytes, "image/jpeg"))],
+        data={"columns": "0"},
+    )
+    assert response.status_code == 400

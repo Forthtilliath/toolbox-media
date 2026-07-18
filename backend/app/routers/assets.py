@@ -51,6 +51,8 @@ async def srcset(
         raise HTTPException(status_code=400, detail="Largeurs invalides")
     if not width_list:
         raise HTTPException(status_code=400, detail="Fournir au moins une largeur")
+    if any(w < 1 for w in width_list):
+        raise HTTPException(status_code=400, detail="Les largeurs doivent être supérieures à 0")
     try:
         files, srcset_attr = generate_srcset(input_bytes, width_list)
     except UnidentifiedImageError:
@@ -109,6 +111,8 @@ async def placeholder(
     text_color: str = Form("969696"),
     text: str | None = Form(None),
 ) -> StreamingResponse:
+    if width < 1 or height < 1:
+        raise HTTPException(status_code=400, detail="width et height doivent être supérieurs ou égaux à 1")
     try:
         image_bytes = generate_placeholder(width, height, bg_color, text_color, text)
     except ValueError:

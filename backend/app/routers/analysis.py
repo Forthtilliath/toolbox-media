@@ -8,6 +8,8 @@ router = APIRouter()
 
 @router.post("/palette")
 async def palette(image: UploadFile = File(...), num_colors: int = Form(5)) -> dict[str, list]:
+    if num_colors < 2:
+        raise HTTPException(status_code=400, detail="num_colors doit être supérieur ou égal à 2")
     input_bytes = await image.read()
     try:
         colors = extract_palette(input_bytes, num_colors)
