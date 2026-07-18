@@ -48,7 +48,7 @@ export default function VideoLoop() {
         <Field label="Durée du fondu (s)">
           <NumberInput min={0.1} step={0.1} value={fadeDuration} onValueChange={setFadeDuration} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Générer
         </Button>
       </form>

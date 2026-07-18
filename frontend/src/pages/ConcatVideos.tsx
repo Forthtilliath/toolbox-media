@@ -34,7 +34,7 @@ export default function ConcatVideos() {
         <Field label="Extraits (dans l'ordre, au moins 2, tous avec une piste audio)">
           <Dropzone value={videos} onValueChange={setVideos} accept="video/*" multiple />
         </Field>
-        <Button type="submit" disabled={videos.length < 2} loading={loading} className="self-start">
+        <Button type="submit" disabled={videos.length < 2 || loading} loading={loading} className="self-start">
           Concaténer
         </Button>
       </form>

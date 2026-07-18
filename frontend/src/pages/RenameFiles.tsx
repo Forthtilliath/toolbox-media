@@ -47,7 +47,7 @@ export default function RenameFiles() {
         <Field label="Numéro de départ">
           <NumberInput value={start} onValueChange={setStart} />
         </Field>
-        <Button type="submit" disabled={files.length === 0} loading={loading} className="self-start">
+        <Button type="submit" disabled={files.length === 0 || loading} loading={loading} className="self-start">
           Renommer
         </Button>
       </form>

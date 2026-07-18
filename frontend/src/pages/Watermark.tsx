@@ -91,7 +91,7 @@ export default function Watermark() {
         <Field label={`Opacité : ${opacity}%`}>
           <Slider min={0} max={100} value={[opacity]} onValueChange={([value]) => setOpacity(value)} />
         </Field>
-        <Button type="submit" disabled={!canSubmit} loading={loading} className="self-start">
+        <Button type="submit" disabled={!canSubmit || loading} loading={loading} className="self-start">
           Appliquer
         </Button>
       </form>

@@ -39,7 +39,7 @@ export default function CompressImage() {
         <Field label={`Qualité : ${quality}`}>
           <Slider min={10} max={100} value={[quality]} onValueChange={([value]) => setQuality(value)} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Compresser
         </Button>
       </form>

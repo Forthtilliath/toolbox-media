@@ -44,7 +44,7 @@ export default function ExtractFrame() {
         <Field label="Timestamp (secondes)">
           <NumberInput min={0} step={0.1} value={timestamp} onValueChange={setTimestamp} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Extraire
         </Button>
       </form>

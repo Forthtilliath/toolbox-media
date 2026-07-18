@@ -67,7 +67,7 @@ export default function AudioTrack() {
             />
           </Field>
         )}
-        <Button type="submit" disabled={!canSubmit} loading={loading} className="self-start">
+        <Button type="submit" disabled={!canSubmit || loading} loading={loading} className="self-start">
           Appliquer
         </Button>
       </form>

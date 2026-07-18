@@ -47,7 +47,7 @@ export default function AdjustImages() {
         <Field label={`Saturation : ${saturation}%`}>
           <Slider min={0} max={200} value={[saturation]} onValueChange={([value]) => setSaturation(value)} />
         </Field>
-        <Button type="submit" disabled={images.length === 0} loading={loading} className="self-start">
+        <Button type="submit" disabled={images.length === 0 || loading} loading={loading} className="self-start">
           Appliquer
         </Button>
       </form>

@@ -56,7 +56,7 @@ export default function VideoToGif() {
         <Field label="Largeur (px)">
           <NumberInput min={100} max={1920} value={width} onValueChange={setWidth} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Générer le GIF
         </Button>
       </form>

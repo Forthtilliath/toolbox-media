@@ -34,7 +34,7 @@ export default function ImagesToPdf() {
         <Field label="Images (dans l'ordre des pages)">
           <Dropzone value={images} onValueChange={setImages} accept="image/*" multiple />
         </Field>
-        <Button type="submit" disabled={images.length === 0} loading={loading} className="self-start">
+        <Button type="submit" disabled={images.length === 0 || loading} loading={loading} className="self-start">
           Convertir
         </Button>
       </form>

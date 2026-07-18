@@ -57,7 +57,7 @@ export default function ConvertVideo() {
             </SelectContent>
           </Select>
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Convertir
         </Button>
       </form>

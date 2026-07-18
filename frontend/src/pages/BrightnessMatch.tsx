@@ -58,7 +58,7 @@ export default function BrightnessMatch() {
         <Field label="Photos à ajuster">
           <Dropzone value={images} onValueChange={setImages} accept="image/*" multiple />
         </Field>
-        <Button type="submit" disabled={!canSubmit} loading={loading} className="self-start">
+        <Button type="submit" disabled={!canSubmit || loading} loading={loading} className="self-start">
           Uniformiser
         </Button>
       </form>

@@ -39,7 +39,7 @@ export default function Denoise() {
         <Field label={`Intensité : ${strength}`}>
           <Slider min={1} max={30} value={[strength]} onValueChange={([value]) => setStrength(value)} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Réduire le bruit
         </Button>
       </form>

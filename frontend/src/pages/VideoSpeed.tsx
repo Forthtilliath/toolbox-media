@@ -44,7 +44,7 @@ export default function VideoSpeed() {
         <Field label={`Vitesse : ${speed.toFixed(2)}x`}>
           <Slider min={0.5} max={2} step={0.05} value={[speed]} onValueChange={([value]) => setSpeed(value)} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Appliquer
         </Button>
       </form>

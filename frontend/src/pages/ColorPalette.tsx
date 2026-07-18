@@ -44,7 +44,7 @@ export default function ColorPalette() {
         <Field label={`Nombre de couleurs : ${numColors}`}>
           <Slider min={2} max={10} value={[numColors]} onValueChange={([value]) => setNumColors(value)} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Extraire
         </Button>
       </form>

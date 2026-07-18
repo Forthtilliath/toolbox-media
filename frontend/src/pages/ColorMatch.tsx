@@ -39,7 +39,7 @@ export default function ColorMatch() {
         <Field label="Photos à ajuster">
           <Dropzone value={images} onValueChange={setImages} accept="image/*" multiple />
         </Field>
-        <Button type="submit" disabled={!reference || images.length === 0} loading={loading} className="self-start">
+        <Button type="submit" disabled={!reference || images.length === 0 || loading} loading={loading} className="self-start">
           Uniformiser
         </Button>
       </form>

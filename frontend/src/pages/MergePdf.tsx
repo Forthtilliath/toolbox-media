@@ -34,7 +34,7 @@ export default function MergePdf() {
         <Field label="Fichiers PDF (au moins 2, dans l'ordre voulu)">
           <Dropzone value={files} onValueChange={setFiles} accept="application/pdf" multiple />
         </Field>
-        <Button type="submit" disabled={files.length < 2} loading={loading} className="self-start">
+        <Button type="submit" disabled={files.length < 2 || loading} loading={loading} className="self-start">
           Fusionner
         </Button>
       </form>

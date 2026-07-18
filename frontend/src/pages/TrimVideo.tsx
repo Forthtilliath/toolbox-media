@@ -48,7 +48,7 @@ export default function TrimVideo() {
         <Field label="Fin (s)">
           <NumberInput min={0} value={end} onValueChange={setEnd} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Couper
         </Button>
       </form>

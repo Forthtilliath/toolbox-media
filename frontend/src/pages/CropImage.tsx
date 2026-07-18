@@ -84,7 +84,7 @@ export default function CropImage() {
             </Field>
           </div>
         )}
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Rogner
         </Button>
       </form>

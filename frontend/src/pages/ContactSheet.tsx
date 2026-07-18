@@ -43,7 +43,7 @@ export default function ContactSheet() {
         <Field label="Taille des miniatures (px)">
           <NumberInput min={50} max={500} value={thumbSize} onValueChange={setThumbSize} />
         </Field>
-        <Button type="submit" disabled={images.length === 0} loading={loading} className="self-start">
+        <Button type="submit" disabled={images.length === 0 || loading} loading={loading} className="self-start">
           Générer
         </Button>
       </form>

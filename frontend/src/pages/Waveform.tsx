@@ -48,7 +48,7 @@ export default function Waveform() {
         <Field label="Hauteur (px)">
           <NumberInput min={50} value={height} onValueChange={setHeight} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Générer
         </Button>
       </form>

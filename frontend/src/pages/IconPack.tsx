@@ -36,10 +36,10 @@ export default function IconPack() {
           <ImageInput onFileChange={setFile} />
         </Field>
         <div className="flex flex-wrap gap-2">
-          <Button type="button" disabled={!file} loading={loading} onClick={() => generate('favicon')}>
+          <Button type="button" disabled={!file || loading} loading={loading} onClick={() => generate('favicon')}>
             Générer favicon.ico
           </Button>
-          <Button type="button" disabled={!file} loading={loading} onClick={() => generate('pack')}>
+          <Button type="button" disabled={!file || loading} loading={loading} onClick={() => generate('pack')}>
             Générer le pack complet (apple-touch-icon, PWA, manifest.json)
           </Button>
         </div>

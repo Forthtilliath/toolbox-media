@@ -39,7 +39,7 @@ export default function QrCode() {
         <Field label={`Taille des modules : ${boxSize}`}>
           <Slider min={4} max={20} value={[boxSize]} onValueChange={([value]) => setBoxSize(value)} />
         </Field>
-        <Button type="submit" disabled={!data.trim()} loading={loading} className="self-start">
+        <Button type="submit" disabled={!data.trim() || loading} loading={loading} className="self-start">
           Générer
         </Button>
       </form>

@@ -34,7 +34,7 @@ export default function StripExif() {
         <Field label="Image">
           <ImageInput onFileChange={setFile} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Supprimer les métadonnées
         </Button>
       </form>

@@ -43,7 +43,7 @@ export default function Srcset() {
         <Field label="Largeurs (px, séparées par des virgules)">
           <Input type="text" value={widths} onChange={(e) => setWidths(e.target.value)} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Générer
         </Button>
       </form>

@@ -39,7 +39,7 @@ export default function RemoveBackground() {
         <Field orientation="horizontal" label="Détourage précis (cheveux, fourrure) — plus lent">
           <Checkbox checked={alphaMatting} onCheckedChange={(checked) => setAlphaMatting(checked === true)} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Supprimer le fond
         </Button>
       </form>

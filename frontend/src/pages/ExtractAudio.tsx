@@ -52,7 +52,7 @@ export default function ExtractAudio() {
             </SelectContent>
           </Select>
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Extraire
         </Button>
       </form>

@@ -48,7 +48,7 @@ export default function Subtitles() {
             multiple={false}
           />
         </Field>
-        <Button type="submit" disabled={!video || !srt} loading={loading} className="self-start">
+        <Button type="submit" disabled={!video || !srt || loading} loading={loading} className="self-start">
           Incruster
         </Button>
       </form>

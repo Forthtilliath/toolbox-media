@@ -44,7 +44,7 @@ export default function PdfToImages() {
         <Field label="Résolution (DPI)">
           <NumberInput min={50} max={600} value={dpi} onValueChange={setDpi} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Extraire
         </Button>
       </form>

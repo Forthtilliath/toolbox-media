@@ -56,7 +56,7 @@ export default function SvgConvert() {
             <NumberInput min={1} value={width ?? 1} onValueChange={setWidth} />
           </Field>
         )}
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Convertir
         </Button>
       </form>

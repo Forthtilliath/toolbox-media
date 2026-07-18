@@ -39,7 +39,7 @@ export default function CompressPdf() {
             multiple={false}
           />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Compresser
         </Button>
       </form>

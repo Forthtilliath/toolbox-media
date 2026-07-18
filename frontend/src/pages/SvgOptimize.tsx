@@ -34,7 +34,7 @@ export default function SvgOptimize() {
         <Field label="Fichier SVG">
           <ImageInput onFileChange={setFile} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Optimiser
         </Button>
       </form>

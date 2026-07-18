@@ -48,7 +48,7 @@ export default function RotateFlipImage() {
         <Field orientation="horizontal" label="Retourner verticalement">
           <Checkbox checked={flipVertical} onCheckedChange={(checked) => setFlipVertical(checked === true)} />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Appliquer
         </Button>
       </form>

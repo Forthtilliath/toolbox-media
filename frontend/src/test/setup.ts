@@ -9,3 +9,16 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
     disconnect() {}
   }
 }
+
+// jsdom doesn't implement Element.scrollTo, but Layout calls it on route change.
+if (typeof Element.prototype.scrollTo === 'undefined') {
+  Element.prototype.scrollTo = function (this: Element, x?: number | ScrollToOptions, y?: number) {
+    if (typeof x === 'object') {
+      if (x.left !== undefined) this.scrollLeft = x.left
+      if (x.top !== undefined) this.scrollTop = x.top
+    } else {
+      if (x !== undefined) this.scrollLeft = x
+      if (y !== undefined) this.scrollTop = y
+    }
+  }
+}

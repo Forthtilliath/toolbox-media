@@ -39,7 +39,7 @@ export default function CompareImages() {
         <Field label="Image B">
           <ImageInput onFileChange={setImageB} />
         </Field>
-        <Button type="submit" disabled={!imageA || !imageB} loading={loading} className="self-start">
+        <Button type="submit" disabled={!imageA || !imageB || loading} loading={loading} className="self-start">
           Comparer
         </Button>
       </form>

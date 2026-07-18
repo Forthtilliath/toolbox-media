@@ -38,7 +38,7 @@ export default function FileHash() {
             multiple={false}
           />
         </Field>
-        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+        <Button type="submit" disabled={!file || loading} loading={loading} className="self-start">
           Calculer
         </Button>
       </form>
