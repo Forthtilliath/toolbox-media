@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,25 +32,22 @@ export default function ColorMatch() {
   return (
     <section>
       <h2>Uniformiser les teintes d'un groupe de photos</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Photo de référence
-          <input type="file" accept="image/*" onChange={(e) => setReference(e.target.files?.[0] ?? null)} />
-        </label>
-        <label>
-          Photos à ajuster
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={(e) => setImages(Array.from(e.target.files ?? []))}
-          />
-        </label>
-        <button type="submit" disabled={!reference || images.length === 0 || loading}>
-          {loading ? 'Traitement...' : 'Uniformiser'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Photo de référence">
+          <ImageInput onFileChange={setReference} />
+        </Field>
+        <Field label="Photos à ajuster">
+          <Dropzone value={images} onValueChange={setImages} accept="image/*" multiple />
+        </Field>
+        <Button type="submit" disabled={!reference || images.length === 0} loading={loading} className="self-start">
+          Uniformiser
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="matched_images.zip" previewType="none" />
     </section>
   )
