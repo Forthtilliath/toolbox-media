@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { NumberInput } from '@forthtilliath/forth-ui/components/number-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,17 +32,27 @@ export default function PdfToImages() {
   return (
     <section>
       <h2>Extraire les pages d'un PDF en images</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Résolution (DPI)
-          <input type="number" min={50} max={600} value={dpi} onChange={(e) => setDpi(Number(e.target.value))} />
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Extraire'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Fichier PDF">
+          <Dropzone
+            value={file ? [file] : []}
+            onValueChange={(files) => setFile(files[0] ?? null)}
+            accept="application/pdf"
+            multiple={false}
+          />
+        </Field>
+        <Field label="Résolution (DPI)">
+          <NumberInput min={50} max={600} value={dpi} onValueChange={setDpi} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Extraire
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="pdf_pages.zip" previewType="none" />
     </section>
   )

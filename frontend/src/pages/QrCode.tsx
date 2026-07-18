@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { Input } from '@forthtilliath/shadcn-ui/components/input'
+import { Slider } from '@forthtilliath/shadcn-ui/components/slider'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,26 +32,22 @@ export default function QrCode() {
   return (
     <section>
       <h2>Générer un QR code</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Texte ou URL
-          <input type="text" value={data} onChange={(e) => setData(e.target.value)} />
-        </label>
-        <label>
-          Taille des modules : {boxSize}
-          <input
-            type="range"
-            min={4}
-            max={20}
-            value={boxSize}
-            onChange={(e) => setBoxSize(Number(e.target.value))}
-          />
-        </label>
-        <button type="submit" disabled={!data.trim() || loading}>
-          {loading ? 'Traitement...' : 'Générer'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Texte ou URL">
+          <Input type="text" value={data} onChange={(e) => setData(e.target.value)} />
+        </Field>
+        <Field label={`Taille des modules : ${boxSize}`}>
+          <Slider min={4} max={20} value={[boxSize]} onValueChange={([value]) => setBoxSize(value)} />
+        </Field>
+        <Button type="submit" disabled={!data.trim()} loading={loading} className="self-start">
+          Générer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="qrcode.png" previewType="image" />
     </section>
   )

@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { CodeBlock } from '@forthtilliath/forth-ui/components/code-block'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 
@@ -25,23 +30,27 @@ export default function FileHash() {
   return (
     <section>
       <h2>Calculer le hash d'un fichier</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Calcul...' : 'Calculer'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Fichier">
+          <Dropzone
+            value={file ? [file] : []}
+            onValueChange={(files) => setFile(files[0] ?? null)}
+            multiple={false}
+          />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Calculer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       {hashes && (
-        <div className="result-panel">
-          <label>
-            MD5
-            <input type="text" readOnly value={hashes.md5} />
-          </label>
-          <label>
-            SHA-256
-            <input type="text" readOnly value={hashes.sha256} />
-          </label>
+        <div className="mt-4 flex flex-col gap-3">
+          <CodeBlock code={hashes.md5} language="text" filename="MD5" />
+          <CodeBlock code={hashes.sha256} language="text" filename="SHA-256" />
         </div>
       )}
     </section>

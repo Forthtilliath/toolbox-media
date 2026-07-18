@@ -1,3 +1,9 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { NumberInput } from '@forthtilliath/forth-ui/components/number-input'
+import { Input } from '@forthtilliath/shadcn-ui/components/input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -28,25 +34,28 @@ export default function RenameFiles() {
   return (
     <section>
       <h2>Renommer un lot de fichiers</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Fichiers
-          <input type="file" multiple onChange={(e) => setFiles(Array.from(e.target.files ?? []))} />
-        </label>
-        <label>
-          Pattern ({'{n}'} = numéro, {'{n:03d}'} = numéro sur 3 chiffres, {'{name}'} = nom original,{' '}
-          {'{ext}'} = extension)
-          <input type="text" value={pattern} onChange={(e) => setPattern(e.target.value)} />
-        </label>
-        <label>
-          Numéro de départ
-          <input type="number" value={start} onChange={(e) => setStart(Number(e.target.value))} />
-        </label>
-        <button type="submit" disabled={files.length === 0 || loading}>
-          {loading ? 'Traitement...' : 'Renommer'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Fichiers">
+          <Dropzone value={files} onValueChange={setFiles} multiple />
+        </Field>
+        <Field
+          label="Pattern"
+          description="{n} = numéro, {n:03d} = numéro sur 3 chiffres, {name} = nom original, {ext} = extension"
+        >
+          <Input type="text" value={pattern} onChange={(e) => setPattern(e.target.value)} />
+        </Field>
+        <Field label="Numéro de départ">
+          <NumberInput value={start} onValueChange={setStart} />
+        </Field>
+        <Button type="submit" disabled={files.length === 0} loading={loading} className="self-start">
+          Renommer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="renamed_files.zip" previewType="none" />
     </section>
   )

@@ -1,3 +1,7 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { ColorPicker } from '@forthtilliath/forth-ui/components/color-picker'
+import { Field } from '@forthtilliath/forth-ui/components/field'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 
@@ -33,24 +37,26 @@ export default function ContrastChecker() {
   return (
     <section>
       <h2>Vérifier le contraste de deux couleurs</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Couleur 1
-          <input type="color" value={`#${colorA}`} onChange={(e) => setColorA(e.target.value.slice(1))} />
-        </label>
-        <label>
-          Couleur 2
-          <input type="color" value={`#${colorB}`} onChange={(e) => setColorB(e.target.value.slice(1))} />
-        </label>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Calcul...' : 'Vérifier'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Couleur 1">
+          <ColorPicker value={`#${colorA}`} onValueChange={(value) => setColorA(value.slice(1))} />
+        </Field>
+        <Field label="Couleur 2">
+          <ColorPicker value={`#${colorB}`} onValueChange={(value) => setColorB(value.slice(1))} />
+        </Field>
+        <Button type="submit" loading={loading} className="self-start">
+          Vérifier
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       {result && (
         <div
-          className="result-panel"
-          style={{ padding: '1rem', background: `#${colorB}`, color: `#${colorA}`, borderRadius: 8 }}
+          className="mt-4 max-w-md rounded-lg p-4"
+          style={{ background: `#${colorB}`, color: `#${colorA}` }}
         >
           <p>Ratio de contraste : {result.ratio}:1</p>
           <ul>
