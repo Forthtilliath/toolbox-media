@@ -104,6 +104,18 @@ def test_rename_invalid_pattern(client, jpeg_bytes):
     assert response.status_code == 400
 
 
+def test_rename_rejects_attribute_traversal_in_pattern(client, jpeg_bytes):
+    # str.format's field-name grammar allows attribute/item access
+    # ("{n.__class__.__mro__}"); a pattern must not be able to pull
+    # arbitrary attributes off the values passed to .format().
+    response = client.post(
+        "/api/misc/rename",
+        files=[("files", ("a.jpg", jpeg_bytes, "image/jpeg"))],
+        data={"pattern": "{n.__class__.__mro__}"},
+    )
+    assert response.status_code == 400
+
+
 def test_merge_pdf(client, pdf_bytes):
     # pdf_bytes already has 2 pages; merging two copies should yield 4.
     response = client.post(

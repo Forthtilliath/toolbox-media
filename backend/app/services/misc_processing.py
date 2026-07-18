@@ -1,6 +1,7 @@
 import hashlib
 import io
 import os
+import string
 
 import fitz
 import qrcode
@@ -88,13 +89,30 @@ def contrast_ratio(color_a: str, color_b: str) -> dict[str, object]:
     }
 
 
+class _SafeFormatter(string.Formatter):
+    # str.format's field-name grammar also allows attribute/item access
+    # (e.g. "{n.__class__.__mro__}"), which lets a user-supplied pattern pull
+    # arbitrary attributes off the values we pass in. Rejecting anything but
+    # a bare allowed name closes that off while keeping "{n:03d}" etc. working
+    # ("n" is the field name; ":03d" is a separate format spec untouched here).
+    _ALLOWED_FIELDS = {"n", "name", "ext"}
+
+    def get_field(self, field_name, args, kwargs):
+        if field_name not in self._ALLOWED_FIELDS:
+            raise KeyError(field_name)
+        return super().get_field(field_name, args, kwargs)
+
+
+_safe_formatter = _SafeFormatter()
+
+
 def rename_batch(filenames: list[str], pattern: str, start: int) -> list[str]:
     used: set[str] = set()
     results = []
     for i, filename in enumerate(filenames):
         stem, ext = os.path.splitext(filename)
         ext = ext.lstrip(".")
-        new_name = pattern.format(n=start + i, name=stem, ext=ext)
+        new_name = _safe_formatter.format(pattern, n=start + i, name=stem, ext=ext)
         if "." not in new_name and ext:
             new_name = f"{new_name}.{ext}"
 

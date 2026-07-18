@@ -12,10 +12,11 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI(title="Toolbox Media API")
 
-# Matches the frontend's MAX_FILE_BYTES (src/api/client.ts) — the client already
-# rejects oversized files before sending, this is the server-side backstop for
-# any other caller (curl, a future mobile client, a client running an old build).
-MAX_UPLOAD_BYTES = 500 * 1024 * 1024
+# Matches the frontend's MAX_FILE_BYTES (src/api/client.ts) *and* nginx's
+# client_max_body_size (frontend/nginx.conf) — the client already rejects
+# oversized files before sending, this is the server-side backstop for any
+# other caller (curl, a future mobile client, a client running an old build).
+MAX_UPLOAD_BYTES = 200 * 1024 * 1024
 
 
 class MaxBodySizeMiddleware(BaseHTTPMiddleware):

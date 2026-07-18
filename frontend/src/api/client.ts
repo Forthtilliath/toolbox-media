@@ -1,9 +1,10 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api'
 
-// Matches the backend's MaxBodySizeMiddleware — checked client-side too so
-// the user gets an immediate, specific message instead of waiting for an
-// upload to complete only to have the server reject it with a 413.
-export const MAX_FILE_BYTES = 500 * 1024 * 1024
+// Matches the backend's MaxBodySizeMiddleware *and* nginx's client_max_body_size
+// (frontend/nginx.conf) — checked client-side too so the user gets an immediate,
+// specific message instead of waiting for an upload to complete only to have
+// nginx or the app reject it with a 413. All three must move together.
+export const MAX_FILE_BYTES = 200 * 1024 * 1024
 
 function formatMegabytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(0)} Mo`

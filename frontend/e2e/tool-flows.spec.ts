@@ -74,7 +74,7 @@ test('rejects an oversized file client-side without any network request', async 
   // fast-to-create) oversized file to disk and pass its path instead.
   const hugeFilePath = path.join(os.tmpdir(), 'toolbox-media-e2e-huge.jpg')
   const fd = fs.openSync(hugeFilePath, 'w')
-  fs.writeSync(fd, Buffer.from([0]), 0, 1, 500 * 1024 * 1024) // just over the 500 MB client-side limit
+  fs.writeSync(fd, Buffer.from([0]), 0, 1, 200 * 1024 * 1024) // just over the 200 MB client-side limit
   fs.closeSync(fd)
 
   try {

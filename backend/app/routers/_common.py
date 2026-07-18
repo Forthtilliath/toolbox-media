@@ -17,11 +17,21 @@ def media_type_of(data: bytes) -> str:
     return FORMAT_MEDIA_TYPES.get(fmt, "application/octet-stream")
 
 
+def _safe_zip_entry_name(filename: str) -> str:
+    # Uploaded filenames (and misc.rename's user-supplied pattern, which can
+    # embed one via {name}) are attacker-controlled. Collapsing to just the
+    # final path segment — checking both separators, since the server's OS
+    # isn't necessarily the client's — prevents a crafted name like
+    # "../../etc/cron.d/x" from writing outside the archive root.
+    name = filename.replace("\\", "/").split("/")[-1]
+    return name or "file"
+
+
 def zip_response(filenames: list[str], contents: list[bytes], download_name: str) -> StreamingResponse:
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for filename, data in zip(filenames, contents):
-            zip_file.writestr(filename, data)
+            zip_file.writestr(_safe_zip_entry_name(filename), data)
     zip_buffer.seek(0)
     return StreamingResponse(
         zip_buffer,
