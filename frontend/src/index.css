@@ -8,8 +8,7 @@
    the pre-built component packages too, since node_modules is excluded from
    that automatic detection and their class names only exist as strings inside
    the already-compiled dist/*.js files. */
-@source "../node_modules/@forthtilliath/forth-ui/dist/**/*.js";
-@source "../node_modules/@forthtilliath/shadcn-ui/dist/**/*.js";
+@source "../node_modules/@forthtilliath/*/dist/**/*.js";
 
 :root {
   color-scheme: light dark;

@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
+import { Input } from '@forthtilliath/shadcn-ui/components/input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -31,17 +36,22 @@ export default function Srcset() {
   return (
     <section>
       <h2>Générer un jeu d'images responsive (srcset)</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Largeurs (px, séparées par des virgules)
-          <input type="text" value={widths} onChange={(e) => setWidths(e.target.value)} />
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Générer'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <Field label="Largeurs (px, séparées par des virgules)">
+          <Input type="text" value={widths} onChange={(e) => setWidths(e.target.value)} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Générer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="srcset_images.zip" previewType="none" />
     </section>
   )

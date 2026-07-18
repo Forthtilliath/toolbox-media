@@ -1,3 +1,7 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
 import { useState } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,16 +31,24 @@ export default function IconPack() {
   return (
     <section>
       <h2>Favicon et pack d'icônes</h2>
-      <form onSubmit={(e) => e.preventDefault()}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <button type="button" disabled={!file || loading} onClick={() => generate('favicon')}>
-          {loading ? 'Traitement...' : 'Générer favicon.ico'}
-        </button>
-        <button type="button" disabled={!file || loading} onClick={() => generate('pack')}>
-          {loading ? 'Traitement...' : "Générer le pack complet (apple-touch-icon, PWA, manifest.json)"}
-        </button>
+      <form onSubmit={(e) => e.preventDefault()} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" disabled={!file} loading={loading} onClick={() => generate('favicon')}>
+            Générer favicon.ico
+          </Button>
+          <Button type="button" disabled={!file} loading={loading} onClick={() => generate('pack')}>
+            Générer le pack complet (apple-touch-icon, PWA, manifest.json)
+          </Button>
+        </div>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename={resultName} previewType="none" />
     </section>
   )

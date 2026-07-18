@@ -1,3 +1,9 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { ColorPicker } from '@forthtilliath/forth-ui/components/color-picker'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { NumberInput } from '@forthtilliath/forth-ui/components/number-input'
+import { Input } from '@forthtilliath/shadcn-ui/components/input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -35,32 +41,31 @@ export default function Placeholder() {
   return (
     <section>
       <h2>Générer une image placeholder</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Largeur (px)
-          <input type="number" min={1} value={width} onChange={(e) => setWidth(Number(e.target.value))} />
-        </label>
-        <label>
-          Hauteur (px)
-          <input type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value))} />
-        </label>
-        <label>
-          Couleur de fond
-          <input type="color" value={`#${bgColor}`} onChange={(e) => setBgColor(e.target.value.slice(1))} />
-        </label>
-        <label>
-          Couleur du texte
-          <input type="color" value={`#${textColor}`} onChange={(e) => setTextColor(e.target.value.slice(1))} />
-        </label>
-        <label>
-          Texte (optionnel, sinon "{width}x{height}")
-          <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-        </label>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Traitement...' : 'Générer'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Largeur (px)">
+          <NumberInput min={1} value={width} onValueChange={setWidth} />
+        </Field>
+        <Field label="Hauteur (px)">
+          <NumberInput min={1} value={height} onValueChange={setHeight} />
+        </Field>
+        <Field label="Couleur de fond">
+          <ColorPicker value={`#${bgColor}`} onValueChange={(value) => setBgColor(value.slice(1))} />
+        </Field>
+        <Field label="Couleur du texte">
+          <ColorPicker value={`#${textColor}`} onValueChange={(value) => setTextColor(value.slice(1))} />
+        </Field>
+        <Field label={`Texte (optionnel, sinon "${width}x${height}")`}>
+          <Input type="text" value={text} onChange={(e) => setText(e.target.value)} />
+        </Field>
+        <Button type="submit" loading={loading} className="self-start">
+          Générer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="placeholder.png" previewType="image" />
     </section>
   )

@@ -1,3 +1,7 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -26,17 +30,19 @@ export default function SvgOptimize() {
   return (
     <section>
       <h2>Optimiser un SVG</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept=".svg,image/svg+xml"
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-        />
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Optimiser'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Fichier SVG">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Optimiser
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="optimized.svg" previewType="image" />
     </section>
   )

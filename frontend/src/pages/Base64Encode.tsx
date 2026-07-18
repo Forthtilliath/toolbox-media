@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { CodeBlock } from '@forthtilliath/forth-ui/components/code-block'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 
@@ -25,17 +30,23 @@ export default function Base64Encode() {
   return (
     <section>
       <h2>Encoder une image en base64 (data URI)</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Encoder'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Encoder
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       {dataUri && (
-        <div className="result-panel">
-          <img src={dataUri} alt="Aperçu" style={{ maxWidth: 200 }} />
-          <textarea readOnly value={dataUri} rows={6} style={{ width: '100%' }} />
+        <div className="mt-4 flex flex-col items-start gap-3">
+          <img src={dataUri} alt="Aperçu" className="w-50 rounded-lg border" />
+          <CodeBlock code={dataUri} language="text" className="w-full" />
         </div>
       )}
     </section>
