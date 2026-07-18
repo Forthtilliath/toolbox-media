@@ -52,7 +52,7 @@ export default function ResizeImage() {
         </Field>
         <Field label="Mode">
           <Select value={mode} onValueChange={(value) => setMode(value as Mode)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Mode">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

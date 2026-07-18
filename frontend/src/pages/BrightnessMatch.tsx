@@ -41,7 +41,7 @@ export default function BrightnessMatch() {
       <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
         <Field label="Cible de luminosité">
           <Select value={mode} onValueChange={(value) => setMode(value as Mode)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Cible de luminosité">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

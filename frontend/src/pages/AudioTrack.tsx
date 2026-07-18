@@ -48,7 +48,7 @@ export default function AudioTrack() {
         </Field>
         <Field label="Action">
           <Select value={action} onValueChange={(value) => setAction(value as Action)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Action">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

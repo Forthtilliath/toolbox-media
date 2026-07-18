@@ -1,8 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { api } from './client'
+import { api, MAX_FILE_BYTES } from './client'
 
 function file(name = 'test.jpg', type = 'image/jpeg') {
   return new File(['fake-content'], name, { type })
+}
+
+function oversizedFile(name = 'huge.jpg') {
+  const f = file(name)
+  Object.defineProperty(f, 'size', { value: MAX_FILE_BYTES + 1 })
+  return f
 }
 
 function mockFetchOk(body: string | Record<string, unknown> = 'fake-blob-content') {
@@ -551,5 +557,26 @@ describe('misc', () => {
     expect(formData.get('color_a')).toBe('000000')
     expect(formData.get('color_b')).toBe('ffffff')
     expect(result.ratio).toBe(21)
+  })
+})
+
+describe('file size limit', () => {
+  it('rejects an oversized file before making any network request (requestFile path)', async () => {
+    mockFetchOk()
+    await expect(api.compressImage(oversizedFile(), 80)).rejects.toThrow(/trop volumineux/)
+    expect(globalThis.fetch).not.toHaveBeenCalled()
+  })
+
+  it('rejects an oversized file before making any network request (requestJson path)', async () => {
+    mockFetchOk()
+    await expect(api.computeHash(oversizedFile())).rejects.toThrow(/trop volumineux/)
+    expect(globalThis.fetch).not.toHaveBeenCalled()
+  })
+
+  it('allows a file right at the limit', async () => {
+    mockFetchOk()
+    const f = file()
+    Object.defineProperty(f, 'size', { value: MAX_FILE_BYTES })
+    await expect(api.compressImage(f, 80)).resolves.toBeDefined()
   })
 })

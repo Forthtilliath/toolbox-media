@@ -40,7 +40,7 @@ export default function ConvertImage() {
         </Field>
         <Field label="Format cible">
           <Select value={format} onValueChange={setFormat}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Format cible">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

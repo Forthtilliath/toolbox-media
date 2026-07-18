@@ -1,5 +1,24 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api'
 
+// Matches the backend's MaxBodySizeMiddleware — checked client-side too so
+// the user gets an immediate, specific message instead of waiting for an
+// upload to complete only to have the server reject it with a 413.
+export const MAX_FILE_BYTES = 500 * 1024 * 1024
+
+function formatMegabytes(bytes: number): string {
+  return `${(bytes / (1024 * 1024)).toFixed(0)} Mo`
+}
+
+function assertFileSizes(formData: FormData): void {
+  for (const value of formData.values()) {
+    if (value instanceof File && value.size > MAX_FILE_BYTES) {
+      throw new Error(
+        `Fichier trop volumineux : "${value.name}" (${formatMegabytes(value.size)}, max ${formatMegabytes(MAX_FILE_BYTES)})`,
+      )
+    }
+  }
+}
+
 async function readErrorMessage(response: Response): Promise<string> {
   const text = await response.text()
   let message = text || `Erreur ${response.status}`
@@ -13,6 +32,7 @@ async function readErrorMessage(response: Response): Promise<string> {
 }
 
 async function requestFile(path: string, formData: FormData): Promise<Blob> {
+  assertFileSizes(formData)
   const response = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
     body: formData,
@@ -24,6 +44,7 @@ async function requestFile(path: string, formData: FormData): Promise<Blob> {
 }
 
 async function requestJson<T>(path: string, formData: FormData): Promise<T> {
+  assertFileSizes(formData)
   const response = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
     body: formData,

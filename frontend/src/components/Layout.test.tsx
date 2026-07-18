@@ -18,7 +18,7 @@ describe('Layout', () => {
     expect(main).toHaveClass('overflow-y-auto')
   })
 
-  it('resets the main content scroll position when navigating to another page', () => {
+  it('resets the main content scroll position when navigating to another page', async () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/']}>
         <App />
@@ -30,7 +30,19 @@ describe('Layout', () => {
 
     fireEvent.click(screen.getByRole('link', { name: 'Rogner' }))
 
-    expect(screen.getByRole('heading', { level: 2, name: 'Rogner une image' })).toBeInTheDocument()
+    // The target page is a React.lazy route — its chunk resolves asynchronously.
+    expect(await screen.findByRole('heading', { level: 2, name: 'Rogner une image' })).toBeInTheDocument()
     expect(main.scrollTop).toBe(0)
+  })
+
+  it('provides a skip link that points at the main content landmark', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>,
+    )
+    const skipLink = screen.getByRole('link', { name: 'Aller au contenu principal' })
+    const main = screen.getByRole('main')
+    expect(skipLink.getAttribute('href')).toBe(`#${main.id}`)
   })
 })

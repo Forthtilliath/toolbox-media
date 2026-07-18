@@ -56,7 +56,7 @@ export default function Watermark() {
         </Field>
         <Field label="Type">
           <Select value={mode} onValueChange={(value) => setMode(value as Mode)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Type">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -76,7 +76,7 @@ export default function Watermark() {
         )}
         <Field label="Position">
           <Select value={position} onValueChange={setPosition}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Position">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { ScrollShadow } from '@forthtilliath/forth-ui/components/scroll-shadow'
 import { Separator } from '@forthtilliath/forth-ui/components/separator'
 import { cn } from '@forthtilliath/shadcn-ui/lib/utils'
@@ -8,6 +8,7 @@ import { toolCategories } from '../toolCategories'
 export default function Layout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
   const mainRef = useRef<HTMLElement>(null)
+  const mainId = useId()
 
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0)
@@ -15,6 +16,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex h-screen overflow-hidden">
+      <a
+        href={`#${mainId}`}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+      >
+        Aller au contenu principal
+      </a>
       <nav className="flex w-64 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground">
         <h1 className="px-4 py-5 text-lg font-semibold">Toolbox Media</h1>
         <ScrollShadow className="flex-1 px-2 pb-4">
@@ -81,7 +88,12 @@ export default function Layout({ children }: { children: ReactNode }) {
           ))}
         </ScrollShadow>
       </nav>
-      <main ref={mainRef} className="flex-1 overflow-y-auto bg-background p-8 text-foreground">
+      <main
+        id={mainId}
+        tabIndex={-1}
+        ref={mainRef}
+        className="flex-1 overflow-y-auto bg-background p-8 text-foreground"
+      >
         <div className="mx-auto max-w-3xl">{children}</div>
       </main>
     </div>

@@ -43,7 +43,7 @@ export default function ExtractAudio() {
         </Field>
         <Field label="Format">
           <Select value={format} onValueChange={(value) => setFormat(value as 'mp3' | 'wav')}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Format">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

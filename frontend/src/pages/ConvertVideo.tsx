@@ -45,7 +45,7 @@ export default function ConvertVideo() {
         </Field>
         <Field label="Format cible">
           <Select value={format} onValueChange={setFormat}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Format cible">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

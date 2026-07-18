@@ -39,7 +39,7 @@ export default function SvgConvert() {
       <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
         <Field label="Sens">
           <Select value={direction} onValueChange={(value) => setDirection(value as Direction)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Sens">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
