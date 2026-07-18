@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { Slider } from '@forthtilliath/shadcn-ui/components/slider'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,24 +32,27 @@ export default function VideoSpeed() {
   return (
     <section>
       <h2>Accélérer / ralentir une vidéo</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Vitesse : {speed.toFixed(2)}x
-          <input
-            type="range"
-            min={0.5}
-            max={2}
-            step={0.05}
-            value={speed}
-            onChange={(e) => setSpeed(Number(e.target.value))}
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Vidéo">
+          <Dropzone
+            value={file ? [file] : []}
+            onValueChange={(files) => setFile(files[0] ?? null)}
+            accept="video/*"
+            multiple={false}
           />
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Appliquer'}
-        </button>
+        </Field>
+        <Field label={`Vitesse : ${speed.toFixed(2)}x`}>
+          <Slider min={0.5} max={2} step={0.05} value={[speed]} onValueChange={([value]) => setSpeed(value)} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Appliquer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="speed.mp4" previewType="video" />
     </section>
   )

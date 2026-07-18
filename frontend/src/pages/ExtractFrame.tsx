@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { NumberInput } from '@forthtilliath/forth-ui/components/number-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,23 +32,27 @@ export default function ExtractFrame() {
   return (
     <section>
       <h2>Extraire une frame / thumbnail</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Timestamp (secondes)
-          <input
-            type="number"
-            min={0}
-            step={0.1}
-            value={timestamp}
-            onChange={(e) => setTimestamp(Number(e.target.value))}
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Vidéo">
+          <Dropzone
+            value={file ? [file] : []}
+            onValueChange={(files) => setFile(files[0] ?? null)}
+            accept="video/*"
+            multiple={false}
           />
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Extraire'}
-        </button>
+        </Field>
+        <Field label="Timestamp (secondes)">
+          <NumberInput min={0} step={0.1} value={timestamp} onValueChange={setTimestamp} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Extraire
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="frame.png" previewType="image" />
     </section>
   )

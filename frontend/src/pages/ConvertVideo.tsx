@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@forthtilliath/shadcn-ui/components/select'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -29,20 +34,38 @@ export default function ConvertVideo() {
   return (
     <section>
       <h2>Convertir le format d'une vidéo</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <select value={format} onChange={(e) => setFormat(e.target.value)}>
-          {FORMATS.map((f) => (
-            <option key={f} value={f}>
-              {f.toUpperCase()}
-            </option>
-          ))}
-        </select>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Convertir'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Vidéo">
+          <Dropzone
+            value={file ? [file] : []}
+            onValueChange={(files) => setFile(files[0] ?? null)}
+            accept="video/*"
+            multiple={false}
+          />
+        </Field>
+        <Field label="Format cible">
+          <Select value={format} onValueChange={setFormat}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {FORMATS.map((f) => (
+                <SelectItem key={f} value={f}>
+                  {f.toUpperCase()}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Convertir
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename={`converted.${format}`} previewType="video" />
     </section>
   )

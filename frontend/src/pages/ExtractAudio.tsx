@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@forthtilliath/shadcn-ui/components/select'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,20 +32,35 @@ export default function ExtractAudio() {
   return (
     <section>
       <h2>Extraire la piste audio</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Format
-          <select value={format} onChange={(e) => setFormat(e.target.value as 'mp3' | 'wav')}>
-            <option value="mp3">MP3</option>
-            <option value="wav">WAV</option>
-          </select>
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Extraire'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Vidéo">
+          <Dropzone
+            value={file ? [file] : []}
+            onValueChange={(files) => setFile(files[0] ?? null)}
+            accept="video/*"
+            multiple={false}
+          />
+        </Field>
+        <Field label="Format">
+          <Select value={format} onValueChange={(value) => setFormat(value as 'mp3' | 'wav')}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="mp3">MP3</SelectItem>
+              <SelectItem value="wav">WAV</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Extraire
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename={`audio.${format}`} previewType="audio" />
     </section>
   )

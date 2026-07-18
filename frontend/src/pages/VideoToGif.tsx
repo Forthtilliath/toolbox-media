@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { NumberInput } from '@forthtilliath/forth-ui/components/number-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -30,41 +35,36 @@ export default function VideoToGif() {
   return (
     <section>
       <h2>Convertir un extrait vidéo en GIF</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Début (s)
-          <input type="number" min={0} value={start} onChange={(e) => setStart(Number(e.target.value))} />
-        </label>
-        <label>
-          Durée (s)
-          <input
-            type="number"
-            min={0.5}
-            step={0.5}
-            value={duration}
-            onChange={(e) => setDuration(Number(e.target.value))}
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Vidéo">
+          <Dropzone
+            value={file ? [file] : []}
+            onValueChange={(files) => setFile(files[0] ?? null)}
+            accept="video/*"
+            multiple={false}
           />
-        </label>
-        <label>
-          FPS
-          <input type="number" min={1} max={30} value={fps} onChange={(e) => setFps(Number(e.target.value))} />
-        </label>
-        <label>
-          Largeur (px)
-          <input
-            type="number"
-            min={100}
-            max={1920}
-            value={width}
-            onChange={(e) => setWidth(Number(e.target.value))}
-          />
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Générer le GIF'}
-        </button>
+        </Field>
+        <Field label="Début (s)">
+          <NumberInput min={0} value={start} onValueChange={setStart} />
+        </Field>
+        <Field label="Durée (s)">
+          <NumberInput min={0.5} step={0.5} value={duration} onValueChange={setDuration} />
+        </Field>
+        <Field label="FPS">
+          <NumberInput min={1} max={30} value={fps} onValueChange={setFps} />
+        </Field>
+        <Field label="Largeur (px)">
+          <NumberInput min={100} max={1920} value={width} onValueChange={setWidth} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Générer le GIF
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="output.gif" previewType="image" />
     </section>
   )

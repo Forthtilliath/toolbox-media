@@ -1,3 +1,7 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,20 +31,32 @@ export default function Subtitles() {
   return (
     <section>
       <h2>Incruster des sous-titres</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Vidéo
-          <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} />
-        </label>
-        <label>
-          Fichier de sous-titres (.srt)
-          <input type="file" accept=".srt" onChange={(e) => setSrt(e.target.files?.[0] ?? null)} />
-        </label>
-        <button type="submit" disabled={!video || !srt || loading}>
-          {loading ? 'Traitement...' : 'Incruster'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Vidéo">
+          <Dropzone
+            value={video ? [video] : []}
+            onValueChange={(files) => setVideo(files[0] ?? null)}
+            accept="video/*"
+            multiple={false}
+          />
+        </Field>
+        <Field label="Fichier de sous-titres (.srt)">
+          <Dropzone
+            value={srt ? [srt] : []}
+            onValueChange={(files) => setSrt(files[0] ?? null)}
+            accept=".srt"
+            multiple={false}
+          />
+        </Field>
+        <Button type="submit" disabled={!video || !srt} loading={loading} className="self-start">
+          Incruster
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="sous-titres.mp4" previewType="video" />
     </section>
   )
