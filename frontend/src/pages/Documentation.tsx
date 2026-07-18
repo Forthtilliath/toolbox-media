@@ -1,3 +1,4 @@
+import { Separator } from '@forthtilliath/shadcn-ui/components/separator'
 import { Link } from 'react-router-dom'
 import { toolCategories } from '../toolCategories'
 
@@ -12,22 +13,25 @@ export default function Documentation() {
       </p>
 
       {toolCategories.map((category) => (
-        <div key={category.title} className="doc-category">
-          <h3>{category.title}</h3>
+        <div key={category.title} className="mt-8">
+          <Separator className="mb-6" />
+          <h3 className="mb-1">{category.title}</h3>
           <p>{category.intro}</p>
           <dl>
             {category.tools.map((tool) => (
-              <div key={tool.to} className="doc-tool">
+              <div key={tool.to} className="my-4">
                 <dt>
-                  <Link to={tool.to}>{tool.label}</Link>
+                  <Link to={tool.to} className="text-primary font-semibold hover:underline">
+                    {tool.label}
+                  </Link>
                 </dt>
-                <dd>{tool.description}</dd>
+                <dd className="mt-1 text-sm opacity-85">{tool.description}</dd>
               </div>
             ))}
           </dl>
           {category.screenshot && (
             <img
-              className="doc-screenshot"
+              className="mt-4 max-w-full rounded-lg border"
               src={category.screenshot.src}
               alt={category.screenshot.alt}
               loading="lazy"
