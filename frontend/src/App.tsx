@@ -1,4 +1,5 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import ErrorBoundary from './components/ErrorBoundary'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Documentation from './pages/Documentation'
@@ -50,8 +51,10 @@ import FileHash from './pages/FileHash'
 import ContrastChecker from './pages/ContrastChecker'
 
 function App() {
+  const { pathname } = useLocation()
   return (
     <Layout>
+      <ErrorBoundary key={pathname}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/documentation" element={<Documentation />} />
@@ -102,6 +105,7 @@ function App() {
         <Route path="/file-hash" element={<FileHash />} />
         <Route path="/contrast-checker" element={<ContrastChecker />} />
       </Routes>
+      </ErrorBoundary>
     </Layout>
   )
 }
