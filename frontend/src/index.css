@@ -7,8 +7,14 @@
 /* Tailwind auto-scans our own src/**\/*.tsx by default; these two point it at
    the pre-built component packages too, since node_modules is excluded from
    that automatic detection and their class names only exist as strings inside
-   the already-compiled dist/*.js files. */
-@source "../node_modules/@forthtilliath/*/dist/**/*.js";
+   the already-compiled dist/*.js files.
+   NB: keep these as two separate lines — a single @source glob with a
+   wildcard in place of the package name silently drops some candidates
+   (confirmed: rounded-r-none, rounded-l-none and w-16 from forth-ui's
+   NumberInput never made it into the build, even though they were present
+   in the scanned file). */
+@source "../node_modules/@forthtilliath/forth-ui/dist/**/*.js";
+@source "../node_modules/@forthtilliath/shadcn-ui/dist/**/*.js";
 
 :root {
   color-scheme: light dark;
@@ -16,4 +22,17 @@
 
 body {
   margin: 0;
+}
+
+@layer base {
+  main h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  main h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
 }
