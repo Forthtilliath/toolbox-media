@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
+import { Slider } from '@forthtilliath/shadcn-ui/components/slider'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,23 +32,22 @@ export default function CompressImage() {
   return (
     <section>
       <h2>Compresser une image</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Qualité : {quality}
-          <input
-            type="range"
-            min={10}
-            max={100}
-            value={quality}
-            onChange={(e) => setQuality(Number(e.target.value))}
-          />
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Compresser'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <Field label={`Qualité : ${quality}`}>
+          <Slider min={10} max={100} value={[quality]} onValueChange={([value]) => setQuality(value)} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Compresser
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="compressed.jpg" previewType="image" />
     </section>
   )

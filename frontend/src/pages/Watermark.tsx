@@ -1,3 +1,11 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
+import { Input } from '@forthtilliath/shadcn-ui/components/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@forthtilliath/shadcn-ui/components/select'
+import { Slider } from '@forthtilliath/shadcn-ui/components/slider'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -42,59 +50,56 @@ export default function Watermark() {
   return (
     <section>
       <h2>Ajouter un filigrane</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Photos à filigraner
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={(e) => setImages(Array.from(e.target.files ?? []))}
-          />
-        </label>
-        <label>
-          Type
-          <select value={mode} onChange={(e) => setMode(e.target.value as Mode)}>
-            <option value="text">Texte</option>
-            <option value="logo">Logo (image)</option>
-          </select>
-        </label>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Photos à filigraner">
+          <Dropzone value={images} onValueChange={setImages} accept="image/*" multiple />
+        </Field>
+        <Field label="Type">
+          <Select value={mode} onValueChange={(value) => setMode(value as Mode)}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="text">Texte</SelectItem>
+              <SelectItem value="logo">Logo (image)</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
         {mode === 'text' ? (
-          <label>
-            Texte
-            <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-          </label>
+          <Field label="Texte">
+            <Input type="text" value={text} onChange={(e) => setText(e.target.value)} />
+          </Field>
         ) : (
-          <label>
-            Logo
-            <input type="file" accept="image/*" onChange={(e) => setLogo(e.target.files?.[0] ?? null)} />
-          </label>
+          <Field label="Logo">
+            <ImageInput onFileChange={setLogo} />
+          </Field>
         )}
-        <label>
-          Position
-          <select value={position} onChange={(e) => setPosition(e.target.value)}>
-            {POSITIONS.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Opacité : {opacity}%
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={opacity}
-            onChange={(e) => setOpacity(Number(e.target.value))}
-          />
-        </label>
-        <button type="submit" disabled={!canSubmit || loading}>
-          {loading ? 'Traitement...' : 'Appliquer'}
-        </button>
+        <Field label="Position">
+          <Select value={position} onValueChange={setPosition}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {POSITIONS.map((p) => (
+                <SelectItem key={p} value={p}>
+                  {p}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field label={`Opacité : ${opacity}%`}>
+          <Slider min={0} max={100} value={[opacity]} onValueChange={([value]) => setOpacity(value)} />
+        </Field>
+        <Button type="submit" disabled={!canSubmit} loading={loading} className="self-start">
+          Appliquer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="watermarked_images.zip" previewType="none" />
     </section>
   )

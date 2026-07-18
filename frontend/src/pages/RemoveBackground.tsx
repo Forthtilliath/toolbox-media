@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
+import { Checkbox } from '@forthtilliath/shadcn-ui/components/checkbox'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -27,21 +32,22 @@ export default function RemoveBackground() {
   return (
     <section>
       <h2>Remove background</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          <input
-            type="checkbox"
-            checked={alphaMatting}
-            onChange={(e) => setAlphaMatting(e.target.checked)}
-          />
-          Détourage précis (cheveux, fourrure) — plus lent
-        </label>
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Supprimer le fond'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <Field orientation="horizontal" label="Détourage précis (cheveux, fourrure) — plus lent">
+          <Checkbox checked={alphaMatting} onCheckedChange={(checked) => setAlphaMatting(checked === true)} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Supprimer le fond
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="remove-bg.png" previewType="image" />
     </section>
   )

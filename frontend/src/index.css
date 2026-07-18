@@ -1,60 +1,26 @@
+@import "@forthtilliath/shadcn-ui/styles/globals-static.css";
+@import "@forthtilliath/shadcn-ui/styles/themes/twitter.css";
+
+@source "./src/**/*.{ts,tsx}";
+
+
+/* Tailwind auto-scans our own src/**\/*.tsx by default; these two point it at
+   the pre-built component packages too, since node_modules is excluded from
+   that automatic detection and their class names only exist as strings inside
+   the already-compiled dist/*.js files. */
+@source "../node_modules/@forthtilliath/forth-ui/dist/**/*.js";
+@source "../node_modules/@forthtilliath/shadcn-ui/dist/**/*.js";
+
 :root {
   color-scheme: light dark;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
-* {
-  box-sizing: border-box;
 }
 
 body {
   margin: 0;
 }
 
-.layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-.sidebar {
-  width: 240px;
-  flex-shrink: 0;
-  padding: 1.5rem 1rem;
-  border-right: 1px solid rgba(128, 128, 128, 0.3);
-}
-
-.sidebar h1 {
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.sidebar a {
-  display: block;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.sidebar a.active {
-  background: rgba(99, 102, 241, 0.15);
-  font-weight: 600;
-}
-
-.content {
-  flex: 1;
-  padding: 2rem;
-  max-width: 720px;
-}
+/* --- Legacy styles below: still used by tool pages not yet migrated to
+   forth-ui. Remove each rule once every page using it has been converted. --- */
 
 .tool-grid {
   display: grid;

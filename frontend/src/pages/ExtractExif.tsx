@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { CodeBlock } from '@forthtilliath/forth-ui/components/code-block'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 
@@ -25,22 +30,25 @@ export default function ExtractExif() {
   return (
     <section>
       <h2>Extraire les métadonnées EXIF</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <button type="submit" disabled={!file || loading}>
-          {loading ? 'Traitement...' : 'Extraire'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <Button type="submit" disabled={!file} loading={loading} className="self-start">
+          Extraire
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
-      {metadata && (
-        <div className="result-panel">
-          {Object.keys(metadata).length === 0 ? (
-            <p>Aucune métadonnée EXIF trouvée dans cette image.</p>
-          ) : (
-            <pre style={{ whiteSpace: 'pre-wrap', width: '100%' }}>{JSON.stringify(metadata, null, 2)}</pre>
-          )}
-        </div>
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
       )}
+      {metadata &&
+        (Object.keys(metadata).length === 0 ? (
+          <p className="mt-4">Aucune métadonnée EXIF trouvée dans cette image.</p>
+        ) : (
+          <CodeBlock className="mt-4" code={JSON.stringify(metadata, null, 2)} language="json" />
+        ))}
     </section>
   )
 }

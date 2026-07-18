@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { Slider } from '@forthtilliath/shadcn-ui/components/slider'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -29,51 +34,28 @@ export default function AdjustImages() {
   return (
     <section>
       <h2>Ajuster luminosité / contraste / saturation en lot</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Photos à ajuster
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={(e) => setImages(Array.from(e.target.files ?? []))}
-          />
-        </label>
-        <label>
-          Luminosité : {brightness}%
-          <input
-            type="range"
-            min={0}
-            max={200}
-            value={brightness}
-            onChange={(e) => setBrightness(Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Contraste : {contrast}%
-          <input
-            type="range"
-            min={0}
-            max={200}
-            value={contrast}
-            onChange={(e) => setContrast(Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Saturation : {saturation}%
-          <input
-            type="range"
-            min={0}
-            max={200}
-            value={saturation}
-            onChange={(e) => setSaturation(Number(e.target.value))}
-          />
-        </label>
-        <button type="submit" disabled={images.length === 0 || loading}>
-          {loading ? 'Traitement...' : 'Appliquer'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Photos à ajuster">
+          <Dropzone value={images} onValueChange={setImages} accept="image/*" multiple />
+        </Field>
+        <Field label={`Luminosité : ${brightness}%`}>
+          <Slider min={0} max={200} value={[brightness]} onValueChange={([value]) => setBrightness(value)} />
+        </Field>
+        <Field label={`Contraste : ${contrast}%`}>
+          <Slider min={0} max={200} value={[contrast]} onValueChange={([value]) => setContrast(value)} />
+        </Field>
+        <Field label={`Saturation : ${saturation}%`}>
+          <Slider min={0} max={200} value={[saturation]} onValueChange={([value]) => setSaturation(value)} />
+        </Field>
+        <Button type="submit" disabled={images.length === 0} loading={loading} className="self-start">
+          Appliquer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="adjusted_images.zip" previewType="none" />
     </section>
   )

@@ -1,3 +1,11 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { ImageInput } from '@forthtilliath/forth-ui/components/image-input'
+import { NumberInput } from '@forthtilliath/forth-ui/components/number-input'
+import { Checkbox } from '@forthtilliath/shadcn-ui/components/checkbox'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@forthtilliath/shadcn-ui/components/select'
+import { Slider } from '@forthtilliath/shadcn-ui/components/slider'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -8,14 +16,14 @@ export default function ResizeImage() {
   const [file, setFile] = useState<File | null>(null)
   const [mode, setMode] = useState<Mode>('percent')
   const [percent, setPercent] = useState(50)
-  const [width, setWidth] = useState<number | ''>('')
-  const [height, setHeight] = useState<number | ''>('')
+  const [width, setWidth] = useState<number | undefined>(undefined)
+  const [height, setHeight] = useState<number | undefined>(undefined)
   const [keepRatio, setKeepRatio] = useState(true)
   const [result, setResult] = useState<Blob | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const canSubmit = file !== null && (mode === 'percent' || width !== '' || height !== '')
+  const canSubmit = file !== null && (mode === 'percent' || width !== undefined || height !== undefined)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -25,13 +33,7 @@ export default function ResizeImage() {
     try {
       const blob = await api.resizeImage(
         file,
-        mode === 'percent'
-          ? { percent, keepRatio: true }
-          : {
-              width: width === '' ? undefined : width,
-              height: height === '' ? undefined : height,
-              keepRatio,
-            },
+        mode === 'percent' ? { percent, keepRatio: true } : { width, height, keepRatio },
       )
       setResult(blob)
     } catch (err) {
@@ -44,57 +46,47 @@ export default function ResizeImage() {
   return (
     <section>
       <h2>Redimensionner une image</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <label>
-          Mode
-          <select value={mode} onChange={(e) => setMode(e.target.value as Mode)}>
-            <option value="percent">Pourcentage</option>
-            <option value="dimensions">Dimensions</option>
-          </select>
-        </label>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Image">
+          <ImageInput onFileChange={setFile} />
+        </Field>
+        <Field label="Mode">
+          <Select value={mode} onValueChange={(value) => setMode(value as Mode)}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="percent">Pourcentage</SelectItem>
+              <SelectItem value="dimensions">Dimensions</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
         {mode === 'percent' ? (
-          <label>
-            Échelle : {percent}%
-            <input
-              type="range"
-              min={5}
-              max={200}
-              value={percent}
-              onChange={(e) => setPercent(Number(e.target.value))}
-            />
-          </label>
+          <Field label={`Échelle : ${percent}%`}>
+            <Slider min={5} max={200} value={[percent]} onValueChange={([value]) => setPercent(value)} />
+          </Field>
         ) : (
           <>
-            <label>
-              Largeur (px)
-              <input
-                type="number"
-                min={1}
-                value={width}
-                onChange={(e) => setWidth(e.target.value === '' ? '' : Number(e.target.value))}
-              />
-            </label>
-            <label>
-              Hauteur (px)
-              <input
-                type="number"
-                min={1}
-                value={height}
-                onChange={(e) => setHeight(e.target.value === '' ? '' : Number(e.target.value))}
-              />
-            </label>
-            <label>
-              <input type="checkbox" checked={keepRatio} onChange={(e) => setKeepRatio(e.target.checked)} />
-              Conserver le ratio
-            </label>
+            <Field label="Largeur (px)">
+              <NumberInput min={1} value={width} onValueChange={setWidth} />
+            </Field>
+            <Field label="Hauteur (px)">
+              <NumberInput min={1} value={height} onValueChange={setHeight} />
+            </Field>
+            <Field orientation="horizontal" label="Conserver le ratio">
+              <Checkbox checked={keepRatio} onCheckedChange={(checked) => setKeepRatio(checked === true)} />
+            </Field>
           </>
         )}
-        <button type="submit" disabled={!canSubmit || loading}>
-          {loading ? 'Traitement...' : 'Redimensionner'}
-        </button>
+        <Button type="submit" disabled={!canSubmit} loading={loading} className="self-start">
+          Redimensionner
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="resized.jpg" previewType="image" />
     </section>
   )

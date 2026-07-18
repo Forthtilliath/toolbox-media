@@ -1,3 +1,4 @@
+import { Button } from '@forthtilliath/forth-ui/components/button'
 import { useEffect, useState } from 'react'
 
 interface ResultPanelProps {
@@ -22,13 +23,15 @@ export default function ResultPanel({ blob, filename, previewType = 'none' }: Re
   if (!url) return null
 
   return (
-    <div className="result-panel">
-      {previewType === 'image' && <img src={url} alt="Résultat" />}
-      {previewType === 'video' && <video src={url} controls />}
+    <div className="mt-6 flex flex-col items-start gap-3">
+      {previewType === 'image' && <img src={url} alt="Résultat" className="max-w-full rounded-lg border" />}
+      {previewType === 'video' && <video src={url} controls className="max-w-full rounded-lg border" />}
       {previewType === 'audio' && <audio src={url} controls />}
-      <a href={url} download={filename}>
-        Télécharger {filename}
-      </a>
+      <Button asChild>
+        <a href={url} download={filename}>
+          Télécharger {filename}
+        </a>
+      </Button>
     </div>
   )
 }

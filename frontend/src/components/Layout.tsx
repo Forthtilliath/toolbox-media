@@ -1,73 +1,82 @@
 import { NavLink } from 'react-router-dom'
 import type { ReactNode } from 'react'
-
-const links = [
-  { to: '/', label: 'Accueil', end: true },
-  { to: '/documentation', label: 'Documentation' },
-  { to: '/remove-background', label: 'Remove BG' },
-  { to: '/color-match', label: 'Uniformiser teintes' },
-  { to: '/brightness-match', label: 'Uniformiser luminosité' },
-  { to: '/compress-image', label: 'Compresser image' },
-  { to: '/convert-image', label: 'Convertir image' },
-  { to: '/crop-image', label: 'Rogner image' },
-  { to: '/resize-image', label: 'Redimensionner image' },
-  { to: '/rotate-flip-image', label: 'Pivoter / retourner' },
-  { to: '/watermark', label: 'Filigrane' },
-  { to: '/adjust-images', label: 'Luminosité/contraste/saturation' },
-  { to: '/strip-exif', label: 'Supprimer EXIF' },
-  { to: '/extract-exif', label: 'Extraire EXIF' },
-  { to: '/deskew', label: 'Redresser image' },
-  { to: '/denoise', label: 'Réduire le bruit' },
-  { to: '/contact-sheet', label: 'Planche contact' },
-  { to: '/icon-pack', label: 'Favicon / pack icônes' },
-  { to: '/srcset', label: 'Srcset responsive' },
-  { to: '/lqip', label: 'Placeholder flou (LQIP)' },
-  { to: '/base64-encode', label: 'Encoder en base64' },
-  { to: '/spritesheet', label: 'Spritesheet CSS' },
-  { to: '/svg-optimize', label: 'Optimiser SVG' },
-  { to: '/svg-convert', label: 'Convertir SVG/PNG' },
-  { to: '/social-formats', label: 'Formats réseaux sociaux' },
-  { to: '/placeholder', label: 'Image placeholder' },
-  { to: '/color-palette', label: 'Palette de couleurs' },
-  { to: '/compare-images', label: 'Comparer deux images' },
-  { to: '/trim-video', label: 'Couper vidéo' },
-  { to: '/video-to-gif', label: 'Vidéo -> GIF' },
-  { to: '/convert-video', label: 'Convertir vidéo' },
-  { to: '/compress-video', label: 'Compresser vidéo' },
-  { to: '/extract-frame', label: 'Extraire une frame' },
-  { to: '/concat-videos', label: 'Concaténer vidéos' },
-  { to: '/audio-track', label: 'Piste audio' },
-  { to: '/extract-audio', label: 'Extraire audio' },
-  { to: '/video-speed', label: 'Vitesse vidéo' },
-  { to: '/subtitles', label: 'Sous-titres' },
-  { to: '/video-loop', label: 'Boucle vidéo' },
-  { to: '/waveform', label: 'Waveform audio' },
-  { to: '/qrcode', label: 'QR code' },
-  { to: '/images-to-pdf', label: 'Images vers PDF' },
-  { to: '/pdf-to-images', label: 'PDF vers images' },
-  { to: '/merge-pdf', label: 'Fusionner PDF' },
-  { to: '/compress-pdf', label: 'Compresser PDF' },
-  { to: '/rename-files', label: 'Renommer en lot' },
-  { to: '/file-hash', label: 'Hash de fichier' },
-  { to: '/contrast-checker', label: 'Contraste WCAG' },
-]
+import { ScrollShadow } from '@forthtilliath/forth-ui/components/scroll-shadow'
+import { Separator } from '@forthtilliath/shadcn-ui/components/separator'
+import { cn } from '@forthtilliath/shadcn-ui/lib/utils'
+import { toolCategories } from '../toolCategories'
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="layout">
-      <nav className="sidebar">
-        <h1>Toolbox Media</h1>
-        <ul>
-          {links.map((link) => (
-            <li key={link.to}>
-              <NavLink to={link.to} end={link.end}>
-                {link.label}
+    <div className="flex min-h-screen">
+      <nav className="flex w-64 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground">
+        <h1 className="px-4 py-5 text-lg font-semibold">Toolbox Media</h1>
+        <ScrollShadow className="flex-1 px-2 pb-4">
+          <ul className="flex flex-col gap-1">
+            <li>
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  cn(
+                    'block rounded-md px-3 py-2 text-sm',
+                    isActive
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground font-medium'
+                      : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                  )
+                }
+              >
+                Accueil
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/documentation"
+                className={({ isActive }) =>
+                  cn(
+                    'block rounded-md px-3 py-2 text-sm',
+                    isActive
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground font-medium'
+                      : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                  )
+                }
+              >
+                Documentation
+              </NavLink>
+            </li>
+          </ul>
+
+          {toolCategories.map((category) => (
+            <div key={category.title}>
+              <Separator className="my-3" />
+              <p className="px-3 text-xs font-semibold tracking-wide text-sidebar-foreground/60 uppercase">
+                {category.title}
+              </p>
+              <ul className="mt-1 flex flex-col gap-1">
+                {category.tools.map((tool) => (
+                  <li key={tool.to}>
+                    <NavLink
+                      to={tool.to}
+                      className={({ isActive }) =>
+                        cn(
+                          'block rounded-md px-3 py-2 text-sm',
+                          isActive
+                            ? 'bg-sidebar-primary text-sidebar-primary-foreground font-medium'
+                            : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                        )
+                      }
+                    >
+                      {tool.label}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </ScrollShadow>
       </nav>
-      <main className="content">{children}</main>
+      <main className="flex-1 overflow-y-auto bg-background p-8 text-foreground">
+        <div className="mx-auto max-w-3xl">{children}</div>
+      </main>
     </div>
   )
 }

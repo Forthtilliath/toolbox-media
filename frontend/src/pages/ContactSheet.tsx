@@ -1,3 +1,8 @@
+import { Alert } from '@forthtilliath/forth-ui/components/alert'
+import { Button } from '@forthtilliath/forth-ui/components/button'
+import { Dropzone } from '@forthtilliath/forth-ui/components/dropzone'
+import { Field } from '@forthtilliath/forth-ui/components/field'
+import { NumberInput } from '@forthtilliath/forth-ui/components/number-input'
 import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import ResultPanel from '../components/ResultPanel'
@@ -28,41 +33,25 @@ export default function ContactSheet() {
   return (
     <section>
       <h2>Générer une planche contact</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Photos
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={(e) => setImages(Array.from(e.target.files ?? []))}
-          />
-        </label>
-        <label>
-          Colonnes
-          <input
-            type="number"
-            min={1}
-            max={10}
-            value={columns}
-            onChange={(e) => setColumns(Number(e.target.value))}
-          />
-        </label>
-        <label>
-          Taille des miniatures (px)
-          <input
-            type="number"
-            min={50}
-            max={500}
-            value={thumbSize}
-            onChange={(e) => setThumbSize(Number(e.target.value))}
-          />
-        </label>
-        <button type="submit" disabled={images.length === 0 || loading}>
-          {loading ? 'Traitement...' : 'Générer'}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
+        <Field label="Photos">
+          <Dropzone value={images} onValueChange={setImages} accept="image/*" multiple />
+        </Field>
+        <Field label="Colonnes">
+          <NumberInput min={1} max={10} value={columns} onValueChange={setColumns} />
+        </Field>
+        <Field label="Taille des miniatures (px)">
+          <NumberInput min={50} max={500} value={thumbSize} onValueChange={setThumbSize} />
+        </Field>
+        <Button type="submit" disabled={images.length === 0} loading={loading} className="self-start">
+          Générer
+        </Button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <Alert variant="destructive" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <ResultPanel blob={result} filename="planche-contact.jpg" previewType="image" />
     </section>
   )
