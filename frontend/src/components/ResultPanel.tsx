@@ -27,10 +27,15 @@ export default function ResultPanel({ blob, filename, previewType = 'none' }: Re
       {previewType === 'image' && <img src={url} alt="Résultat" className="max-w-full rounded-lg border" />}
       {previewType === 'video' && <video src={url} controls className="max-w-full rounded-lg border" />}
       {previewType === 'audio' && <audio src={url} controls />}
-      <Button asChild>
-        <a href={url} download={filename}>
-          Télécharger {filename}
-        </a>
+      <Button
+        onClick={() => {
+          const a = document.createElement('a')
+          a.href = url
+          a.download = filename
+          a.click()
+        }}
+      >
+        Télécharger {filename}
       </Button>
     </div>
   )

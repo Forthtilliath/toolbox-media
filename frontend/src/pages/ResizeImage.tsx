@@ -68,10 +68,10 @@ export default function ResizeImage() {
         ) : (
           <>
             <Field label="Largeur (px)">
-              <NumberInput min={1} value={width} onValueChange={setWidth} />
+              <NumberInput min={1} value={width ?? 1} onValueChange={setWidth} />
             </Field>
             <Field label="Hauteur (px)">
-              <NumberInput min={1} value={height} onValueChange={setHeight} />
+              <NumberInput min={1} value={height ?? 1} onValueChange={setHeight} />
             </Field>
             <Field orientation="horizontal" label="Conserver le ratio">
               <Checkbox checked={keepRatio} onCheckedChange={(checked) => setKeepRatio(checked === true)} />

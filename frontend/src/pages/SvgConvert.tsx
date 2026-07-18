@@ -53,7 +53,7 @@ export default function SvgConvert() {
         </Field>
         {direction === 'svg-to-png' && (
           <Field label="Largeur cible (px, optionnel)">
-            <NumberInput min={1} value={width} onValueChange={setWidth} />
+            <NumberInput min={1} value={width ?? 1} onValueChange={setWidth} />
           </Field>
         )}
         <Button type="submit" disabled={!file} loading={loading} className="self-start">

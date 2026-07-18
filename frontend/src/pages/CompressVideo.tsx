@@ -48,7 +48,7 @@ export default function CompressVideo() {
           <NumberInput min={100} value={bitrate} onValueChange={setBitrate} />
         </Field>
         <Field label="Largeur max (px, optionnel)">
-          <NumberInput min={100} value={width} onValueChange={setWidth} />
+          <NumberInput min={100} value={width ?? 100} onValueChange={setWidth} />
         </Field>
         <Button type="submit" disabled={!canSubmit} loading={loading} className="self-start">
           Compresser

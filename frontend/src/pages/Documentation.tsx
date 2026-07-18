@@ -1,4 +1,4 @@
-import { Separator } from '@forthtilliath/shadcn-ui/components/separator'
+import { Separator } from '@forthtilliath/forth-ui/components/separator'
 import { Link } from 'react-router-dom'
 import { toolCategories } from '../toolCategories'
 

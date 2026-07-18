@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { useEffect, useRef, type ReactNode } from 'react'
 import { ScrollShadow } from '@forthtilliath/forth-ui/components/scroll-shadow'
-import { Separator } from '@forthtilliath/shadcn-ui/components/separator'
+import { Separator } from '@forthtilliath/forth-ui/components/separator'
 import { cn } from '@forthtilliath/shadcn-ui/lib/utils'
 import { toolCategories } from '../toolCategories'
 
