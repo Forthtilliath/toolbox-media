@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from PIL import UnidentifiedImageError
 
@@ -12,7 +14,7 @@ async def palette(image: UploadFile = File(...), num_colors: int = Form(5)) -> d
         raise HTTPException(status_code=400, detail="num_colors doit être supérieur ou égal à 2")
     input_bytes = await image.read()
     try:
-        colors = extract_palette(input_bytes, num_colors)
+        colors = await asyncio.to_thread(extract_palette, input_bytes, num_colors)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return {"colors": colors}
@@ -23,7 +25,7 @@ async def compare(image_a: UploadFile = File(...), image_b: UploadFile = File(..
     bytes_a = await image_a.read()
     bytes_b = await image_b.read()
     try:
-        data_uri, score = compare_images(bytes_a, bytes_b)
+        data_uri, score = await asyncio.to_thread(compare_images, bytes_a, bytes_b)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return {"data_uri": data_uri, "similarity": score}

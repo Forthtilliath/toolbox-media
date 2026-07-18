@@ -1,3 +1,4 @@
+import asyncio
 import io
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -23,7 +24,7 @@ router = APIRouter()
 async def qrcode_endpoint(data: str = Form(...), box_size: int = Form(10)) -> StreamingResponse:
     if box_size < 1:
         raise HTTPException(status_code=400, detail="box_size doit être supérieur à 0")
-    output_bytes = generate_qrcode(data, box_size)
+    output_bytes = await asyncio.to_thread(generate_qrcode, data, box_size)
     return StreamingResponse(io.BytesIO(output_bytes), media_type="image/png")
 
 
@@ -31,7 +32,7 @@ async def qrcode_endpoint(data: str = Form(...), box_size: int = Form(10)) -> St
 async def images_to_pdf_endpoint(images: list[UploadFile] = File(...)) -> StreamingResponse:
     images_bytes = [await img.read() for img in images]
     try:
-        output_bytes = images_to_pdf(images_bytes)
+        output_bytes = await asyncio.to_thread(images_to_pdf, images_bytes)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return StreamingResponse(
@@ -45,7 +46,7 @@ async def images_to_pdf_endpoint(images: list[UploadFile] = File(...)) -> Stream
 async def pdf_to_images_endpoint(file: UploadFile = File(...), dpi: int = Form(150)) -> StreamingResponse:
     input_bytes = await file.read()
     try:
-        pages = pdf_to_images(input_bytes, dpi)
+        pages = await asyncio.to_thread(pdf_to_images, input_bytes, dpi)
     except Exception:
         raise HTTPException(status_code=400, detail="Fichier PDF invalide")
     if not pages:
@@ -60,7 +61,7 @@ async def merge_pdf_endpoint(files: list[UploadFile] = File(...)) -> StreamingRe
         raise HTTPException(status_code=400, detail="Fournir au moins 2 fichiers PDF")
     pdfs_bytes = [await f.read() for f in files]
     try:
-        output_bytes = merge_pdfs(pdfs_bytes)
+        output_bytes = await asyncio.to_thread(merge_pdfs, pdfs_bytes)
     except Exception:
         raise HTTPException(status_code=400, detail="Fichier PDF invalide")
     return StreamingResponse(
@@ -74,7 +75,7 @@ async def merge_pdf_endpoint(files: list[UploadFile] = File(...)) -> StreamingRe
 async def compress_pdf_endpoint(file: UploadFile = File(...)) -> StreamingResponse:
     input_bytes = await file.read()
     try:
-        output_bytes = compress_pdf(input_bytes)
+        output_bytes = await asyncio.to_thread(compress_pdf, input_bytes)
     except Exception:
         raise HTTPException(status_code=400, detail="Fichier PDF invalide")
     return StreamingResponse(
@@ -87,7 +88,7 @@ async def compress_pdf_endpoint(file: UploadFile = File(...)) -> StreamingRespon
 @router.post("/hash")
 async def hash_endpoint(file: UploadFile = File(...)) -> dict[str, str]:
     data = await file.read()
-    return compute_hashes(data)
+    return await asyncio.to_thread(compute_hashes, data)
 
 
 @router.post("/contrast")
@@ -105,7 +106,7 @@ async def rename_endpoint(
     original_names = [f.filename or f"file_{i}" for i, f in enumerate(files)]
     contents = [await f.read() for f in files]
     try:
-        new_names = rename_batch(original_names, pattern, start)
+        new_names = await asyncio.to_thread(rename_batch, original_names, pattern, start)
     except (KeyError, ValueError) as e:
         raise HTTPException(status_code=400, detail=f"Pattern invalide: {e}")
     return zip_response(new_names, contents, "renamed_files.zip")

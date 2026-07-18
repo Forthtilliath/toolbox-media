@@ -1,3 +1,4 @@
+import asyncio
 import io
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -13,7 +14,7 @@ router = APIRouter()
 async def optimize(file: UploadFile = File(...)) -> StreamingResponse:
     input_bytes = await file.read()
     try:
-        output_bytes = optimize_svg(input_bytes)
+        output_bytes = await asyncio.to_thread(optimize_svg, input_bytes)
     except Exception:
         raise HTTPException(status_code=400, detail="Fichier SVG invalide")
     return StreamingResponse(io.BytesIO(output_bytes), media_type="image/svg+xml")
@@ -26,13 +27,13 @@ async def convert(
     input_bytes = await file.read()
     if direction == "svg-to-png":
         try:
-            output_bytes = svg_to_png(input_bytes, width)
+            output_bytes = await asyncio.to_thread(svg_to_png, input_bytes, width)
         except Exception:
             raise HTTPException(status_code=400, detail="Fichier SVG invalide")
         return StreamingResponse(io.BytesIO(output_bytes), media_type="image/png")
     if direction == "png-to-svg":
         try:
-            output_bytes = raster_to_svg(input_bytes)
+            output_bytes = await asyncio.to_thread(raster_to_svg, input_bytes)
         except UnidentifiedImageError:
             raise HTTPException(status_code=400, detail="Fichier image invalide")
         return StreamingResponse(io.BytesIO(output_bytes), media_type="image/svg+xml")

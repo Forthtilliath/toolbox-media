@@ -1,3 +1,4 @@
+import asyncio
 import io
 import os
 import subprocess
@@ -43,7 +44,7 @@ async def trim(
     input_bytes = await video.read()
     suffix = _suffix_of(video.filename)
     try:
-        output_path = trim_video(input_bytes, start, end, suffix)
+        output_path = await asyncio.to_thread(trim_video, input_bytes, start, end, suffix)
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return FileResponse(
@@ -64,7 +65,7 @@ async def to_gif(
 ) -> FileResponse:
     input_bytes = await video.read()
     try:
-        output_path = video_to_gif(input_bytes, start, duration, fps, width)
+        output_path = await asyncio.to_thread(video_to_gif, input_bytes, start, duration, fps, width)
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return FileResponse(
@@ -81,7 +82,9 @@ async def convert(video: UploadFile = File(...), target_format: str = Form(...))
         raise HTTPException(status_code=400, detail=f"Format inconnu: {target_format}")
     input_bytes = await video.read()
     try:
-        output_path = convert_video_format(input_bytes, _suffix_of(video.filename), target_format)
+        output_path = await asyncio.to_thread(
+            convert_video_format, input_bytes, _suffix_of(video.filename), target_format
+        )
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return FileResponse(
@@ -101,7 +104,7 @@ async def compress(
     input_bytes = await video.read()
     suffix = _suffix_of(video.filename)
     try:
-        output_path = compress_video(input_bytes, suffix, bitrate_kbps, width)
+        output_path = await asyncio.to_thread(compress_video, input_bytes, suffix, bitrate_kbps, width)
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return FileResponse(
@@ -118,7 +121,9 @@ async def extract_frame_endpoint(
 ) -> StreamingResponse:
     input_bytes = await video.read()
     try:
-        frame_bytes = extract_frame(input_bytes, _suffix_of(video.filename), timestamp)
+        frame_bytes = await asyncio.to_thread(
+            extract_frame, input_bytes, _suffix_of(video.filename), timestamp
+        )
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return StreamingResponse(io.BytesIO(frame_bytes), media_type="image/png")
@@ -131,7 +136,7 @@ async def concat(videos: list[UploadFile] = File(...)) -> FileResponse:
     suffixes = [_suffix_of(v.filename) for v in videos]
     clips_bytes = [await v.read() for v in videos]
     try:
-        output_path = concat_videos(clips_bytes, suffixes)
+        output_path = await asyncio.to_thread(concat_videos, clips_bytes, suffixes)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except subprocess.CalledProcessError as e:
@@ -152,7 +157,7 @@ async def audio_track(
     suffix = _suffix_of(video.filename)
     if action == "remove":
         try:
-            output_path = remove_audio(input_bytes, suffix)
+            output_path = await asyncio.to_thread(remove_audio, input_bytes, suffix)
         except subprocess.CalledProcessError as e:
             raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     elif action == "replace":
@@ -160,7 +165,9 @@ async def audio_track(
             raise HTTPException(status_code=400, detail="Fournir un fichier audio")
         audio_bytes = await audio.read()
         try:
-            output_path = replace_audio(input_bytes, suffix, audio_bytes, _suffix_of(audio.filename))
+            output_path = await asyncio.to_thread(
+                replace_audio, input_bytes, suffix, audio_bytes, _suffix_of(audio.filename)
+            )
         except subprocess.CalledProcessError as e:
             raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     else:
@@ -181,7 +188,9 @@ async def extract_audio_endpoint(
         raise HTTPException(status_code=400, detail=f"Format inconnu: {target_format}")
     input_bytes = await video.read()
     try:
-        output_path = extract_audio(input_bytes, _suffix_of(video.filename), target_format)
+        output_path = await asyncio.to_thread(
+            extract_audio, input_bytes, _suffix_of(video.filename), target_format
+        )
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return FileResponse(
@@ -199,7 +208,7 @@ async def speed_endpoint(video: UploadFile = File(...), speed: float = Form(...)
     input_bytes = await video.read()
     suffix = _suffix_of(video.filename)
     try:
-        output_path = change_speed(input_bytes, suffix, speed)
+        output_path = await asyncio.to_thread(change_speed, input_bytes, suffix, speed)
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return FileResponse(
@@ -216,7 +225,7 @@ async def subtitles_endpoint(video: UploadFile = File(...), srt: UploadFile = Fi
     srt_bytes = await srt.read()
     suffix = _suffix_of(video.filename)
     try:
-        output_path = burn_subtitles(input_bytes, suffix, srt_bytes)
+        output_path = await asyncio.to_thread(burn_subtitles, input_bytes, suffix, srt_bytes)
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return FileResponse(
@@ -232,7 +241,7 @@ async def loop_endpoint(video: UploadFile = File(...), fade_duration: float = Fo
     input_bytes = await video.read()
     suffix = _suffix_of(video.filename)
     try:
-        output_path = create_seamless_loop(input_bytes, suffix, fade_duration)
+        output_path = await asyncio.to_thread(create_seamless_loop, input_bytes, suffix, fade_duration)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except subprocess.CalledProcessError as e:
@@ -251,7 +260,9 @@ async def waveform_endpoint(
 ) -> StreamingResponse:
     input_bytes = await video.read()
     try:
-        image_bytes = generate_waveform(input_bytes, _suffix_of(video.filename), width, height)
+        image_bytes = await asyncio.to_thread(
+            generate_waveform, input_bytes, _suffix_of(video.filename), width, height
+        )
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
     return StreamingResponse(io.BytesIO(image_bytes), media_type="image/png")

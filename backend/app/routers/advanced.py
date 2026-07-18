@@ -1,3 +1,4 @@
+import asyncio
 import io
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -20,7 +21,7 @@ router = APIRouter()
 async def strip_exif_endpoint(image: UploadFile = File(...)) -> StreamingResponse:
     input_bytes = await image.read()
     try:
-        output_bytes = strip_exif(input_bytes)
+        output_bytes = await asyncio.to_thread(strip_exif, input_bytes)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
@@ -30,7 +31,7 @@ async def strip_exif_endpoint(image: UploadFile = File(...)) -> StreamingRespons
 async def extract_exif_endpoint(image: UploadFile = File(...)) -> dict[str, dict[str, object]]:
     input_bytes = await image.read()
     try:
-        metadata = extract_exif(input_bytes)
+        metadata = await asyncio.to_thread(extract_exif, input_bytes)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return {"metadata": metadata}
@@ -40,7 +41,7 @@ async def extract_exif_endpoint(image: UploadFile = File(...)) -> dict[str, dict
 async def deskew_endpoint(image: UploadFile = File(...)) -> StreamingResponse:
     input_bytes = await image.read()
     try:
-        output_bytes = deskew_image(input_bytes)
+        output_bytes = await asyncio.to_thread(deskew_image, input_bytes)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
@@ -50,7 +51,7 @@ async def deskew_endpoint(image: UploadFile = File(...)) -> StreamingResponse:
 async def denoise_endpoint(image: UploadFile = File(...), strength: int = Form(10)) -> StreamingResponse:
     input_bytes = await image.read()
     try:
-        output_bytes = denoise_image(input_bytes, strength)
+        output_bytes = await asyncio.to_thread(denoise_image, input_bytes, strength)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
@@ -66,7 +67,7 @@ async def contact_sheet_endpoint(
         raise HTTPException(status_code=400, detail="thumb_size doit être supérieur ou égal à 1")
     images_bytes = [await img.read() for img in images]
     try:
-        sheet_bytes = generate_contact_sheet(images_bytes, columns, thumb_size)
+        sheet_bytes = await asyncio.to_thread(generate_contact_sheet, images_bytes, columns, thumb_size)
     except UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Fichier image invalide")
     return StreamingResponse(io.BytesIO(sheet_bytes), media_type="image/jpeg")
