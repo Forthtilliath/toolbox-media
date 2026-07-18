@@ -55,4 +55,4 @@ jobs:
       - name: Run backend tests
         run: |
           docker run --rm -v "${{ github.workspace }}/backend:/app" -w /app toolbox-media-backend \
-            bash -c "pip install --no-cache-dir -r requirements-dev.txt -q && pytest -q"
+            bash -c "pip install --no-cache-dir -r requirements-dev.txt -q && python -m pytest -q"

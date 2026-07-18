@@ -1,11 +1,11 @@
-fastapi==0.115.6
+fastapi==0.139.2
 uvicorn[standard]==0.34.0
-python-multipart==0.0.20
-rembg[cpu]==2.0.61
-pillow==11.1.0
+python-multipart==0.0.32
+rembg[cpu]==2.0.77
+pillow==12.3.0
 pillow-avif-plugin==1.5.5
-scikit-image==0.24.0
-numpy==1.26.4
+scikit-image==0.26.0
+numpy==2.4.6
 scour==0.38.2
 cairosvg==2.9.0
 qrcode[pil]==8.2

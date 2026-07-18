@@ -4,7 +4,12 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - rembg-models:/root/.u2net
+      # Matches the non-root "appuser" added in backend/Dockerfile — moving off
+      # root means this now needs to be that user's home dir instead of /root.
+      # NB: this is a new mount path, so the U2Net model will download again
+      # once on first use after upgrading (the old /root/.u2net volume content
+      # becomes unreachable, and can be removed with `docker volume prune`).
+      - rembg-models:/home/appuser/.u2net
     restart: unless-stopped
 
   frontend:
