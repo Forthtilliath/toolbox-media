@@ -1,4 +1,5 @@
 import logging
+import os
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -43,13 +44,23 @@ class CatchAllExceptionMiddleware(BaseHTTPMiddleware):
             return JSONResponse(status_code=500, content={"detail": str(exc)})
 
 
+# In both docker-compose (nginx on :8080 proxying /api/ to this service) and
+# `npm run dev` (Vite's proxy on :5173), the browser only ever calls this API
+# same-origin — CORS only matters for a caller opening this port directly.
+# Wildcard origins would let any third-party page trigger expensive work
+# (rembg/ffmpeg) via a visitor's browser; restrict to known frontend origins,
+# overridable via env for other deployments.
+_default_origins = "http://localhost:8080,http://localhost:5173"
+_origins_env = os.environ.get("CORS_ALLOWED_ORIGINS", _default_origins)
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in _origins_env.split(",")]
+
 app.add_middleware(MaxBodySizeMiddleware)
 app.add_middleware(CatchAllExceptionMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=CORS_ALLOWED_ORIGINS,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 app.include_router(background.router, prefix="/api/background", tags=["background"])
