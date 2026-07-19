@@ -164,7 +164,7 @@ def extract_frame(input_bytes: bytes, suffix: str, timestamp: float) -> bytes:
 
 
 def concat_videos(clips_bytes: list[bytes], suffixes: list[str]) -> str:
-    input_paths = [_write_temp_input(data, suffix) for data, suffix in zip(clips_bytes, suffixes)]
+    input_paths = [_write_temp_input(data, suffix) for data, suffix in zip(clips_bytes, suffixes, strict=True)]
     try:
         missing_audio = [i for i, path in enumerate(input_paths) if not _has_audio_stream(path)]
         if missing_audio:

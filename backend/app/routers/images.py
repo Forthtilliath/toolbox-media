@@ -31,7 +31,7 @@ async def compress(image: UploadFile = File(...), quality: int = Form(80)) -> St
     try:
         output_bytes, media_type = await asyncio.to_thread(compress_image, input_bytes, quality)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type)
 
 
@@ -41,7 +41,7 @@ async def convert(image: UploadFile = File(...), target_format: str = Form(...))
     try:
         output_bytes, media_type = await asyncio.to_thread(convert_image, input_bytes, target_format)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type)
 
 
@@ -57,7 +57,7 @@ async def color_match(
             lambda: [match_colors(reference_bytes, data) for data in images_bytes]
         )
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return zip_response(filenames, results, "matched_images.zip")
 
 
@@ -71,7 +71,7 @@ async def normalize_brightness_endpoint(
     try:
         results = await asyncio.to_thread(normalize_brightness, images_bytes, reference_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return zip_response(filenames, results, "normalized_images.zip")
 
 
@@ -88,7 +88,7 @@ async def crop(
     try:
         source = Image.open(io.BytesIO(input_bytes))
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
 
     if ratio is not None:
         if ratio not in RATIO_PRESETS:
@@ -118,7 +118,7 @@ async def resize(
     try:
         output_bytes = await asyncio.to_thread(resize_image, input_bytes, width, height, percent, keep_ratio)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
 
 
@@ -135,7 +135,7 @@ async def rotate_flip(
             rotate_flip_image, input_bytes, angle, flip_horizontal, flip_vertical
         )
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
 
 
@@ -157,7 +157,7 @@ async def watermark(
     try:
         results = await asyncio.to_thread(add_watermark, images_bytes, text, logo_bytes, opacity, position)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return zip_response(filenames, results, "watermarked_images.zip")
 
 
@@ -173,5 +173,5 @@ async def adjust(
     try:
         results = await asyncio.to_thread(adjust_batch, images_bytes, brightness, contrast, saturation)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return zip_response(filenames, results, "adjusted_images.zip")

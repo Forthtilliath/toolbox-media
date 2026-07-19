@@ -16,7 +16,7 @@ async def optimize(file: UploadFile = File(...)) -> StreamingResponse:
     try:
         output_bytes = await asyncio.to_thread(optimize_svg, input_bytes)
     except Exception:
-        raise HTTPException(status_code=400, detail="Fichier SVG invalide")
+        raise HTTPException(status_code=400, detail="Fichier SVG invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type="image/svg+xml")
 
 
@@ -29,12 +29,12 @@ async def convert(
         try:
             output_bytes = await asyncio.to_thread(svg_to_png, input_bytes, width)
         except Exception:
-            raise HTTPException(status_code=400, detail="Fichier SVG invalide")
+            raise HTTPException(status_code=400, detail="Fichier SVG invalide") from None
         return StreamingResponse(io.BytesIO(output_bytes), media_type="image/png")
     if direction == "png-to-svg":
         try:
             output_bytes = await asyncio.to_thread(raster_to_svg, input_bytes)
         except UnidentifiedImageError:
-            raise HTTPException(status_code=400, detail="Fichier image invalide")
+            raise HTTPException(status_code=400, detail="Fichier image invalide") from None
         return StreamingResponse(io.BytesIO(output_bytes), media_type="image/svg+xml")
     raise HTTPException(status_code=400, detail=f"Direction inconnue: {direction}")

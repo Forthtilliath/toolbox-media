@@ -16,5 +16,5 @@ async def remove_bg(image: UploadFile = File(...), alpha_matting: bool = Form(Fa
     try:
         output_bytes = await asyncio.to_thread(remove_background, input_bytes, alpha_matting)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type="image/png")

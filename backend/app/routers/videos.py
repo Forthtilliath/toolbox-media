@@ -46,7 +46,7 @@ async def trim(
     try:
         output_path = await asyncio.to_thread(trim_video, input_bytes, start, end, suffix)
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type="video/mp4",
@@ -67,7 +67,7 @@ async def to_gif(
     try:
         output_path = await asyncio.to_thread(video_to_gif, input_bytes, start, duration, fps, width)
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type="image/gif",
@@ -86,7 +86,7 @@ async def convert(video: UploadFile = File(...), target_format: str = Form(...))
             convert_video_format, input_bytes, _suffix_of(video.filename), target_format
         )
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type=f"video/{target_format}",
@@ -106,7 +106,7 @@ async def compress(
     try:
         output_path = await asyncio.to_thread(compress_video, input_bytes, suffix, bitrate_kbps, width)
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type="video/mp4",
@@ -125,7 +125,7 @@ async def extract_frame_endpoint(
             extract_frame, input_bytes, _suffix_of(video.filename), timestamp
         )
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return StreamingResponse(io.BytesIO(frame_bytes), media_type="image/png")
 
 
@@ -138,9 +138,9 @@ async def concat(videos: list[UploadFile] = File(...)) -> FileResponse:
     try:
         output_path = await asyncio.to_thread(concat_videos, clips_bytes, suffixes)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type="video/mp4",
@@ -159,7 +159,7 @@ async def audio_track(
         try:
             output_path = await asyncio.to_thread(remove_audio, input_bytes, suffix)
         except subprocess.CalledProcessError as e:
-            raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+            raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     elif action == "replace":
         if audio is None:
             raise HTTPException(status_code=400, detail="Fournir un fichier audio")
@@ -169,7 +169,7 @@ async def audio_track(
                 replace_audio, input_bytes, suffix, audio_bytes, _suffix_of(audio.filename)
             )
         except subprocess.CalledProcessError as e:
-            raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+            raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     else:
         raise HTTPException(status_code=400, detail=f"Action inconnue: {action}")
     return FileResponse(
@@ -192,7 +192,7 @@ async def extract_audio_endpoint(
             extract_audio, input_bytes, _suffix_of(video.filename), target_format
         )
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type=f"audio/{target_format}",
@@ -210,7 +210,7 @@ async def speed_endpoint(video: UploadFile = File(...), speed: float = Form(...)
     try:
         output_path = await asyncio.to_thread(change_speed, input_bytes, suffix, speed)
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type="video/mp4",
@@ -227,7 +227,7 @@ async def subtitles_endpoint(video: UploadFile = File(...), srt: UploadFile = Fi
     try:
         output_path = await asyncio.to_thread(burn_subtitles, input_bytes, suffix, srt_bytes)
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type="video/mp4",
@@ -243,9 +243,9 @@ async def loop_endpoint(video: UploadFile = File(...), fade_duration: float = Fo
     try:
         output_path = await asyncio.to_thread(create_seamless_loop, input_bytes, suffix, fade_duration)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return FileResponse(
         output_path,
         media_type="video/mp4",
@@ -264,5 +264,5 @@ async def waveform_endpoint(
             generate_waveform, input_bytes, _suffix_of(video.filename), width, height
         )
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore"))
+        raise HTTPException(status_code=400, detail=e.stderr.decode(errors="ignore")) from e
     return StreamingResponse(io.BytesIO(image_bytes), media_type="image/png")

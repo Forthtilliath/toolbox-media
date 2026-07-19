@@ -4,10 +4,10 @@ import numpy as np
 import pillow_avif  # noqa: F401  (registers the AVIF codec with Pillow)
 import pillow_heif
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
-
-pillow_heif.register_heif_opener()  # lets Image.open() read .heic/.heif uploads
 from skimage.color import lab2rgb, rgb2lab
 from skimage.exposure import match_histograms
+
+pillow_heif.register_heif_opener()  # lets Image.open() read .heic/.heif uploads
 
 RATIO_PRESETS = {"1:1": (1, 1), "4:3": (4, 3), "16:9": (16, 9)}
 
@@ -90,7 +90,7 @@ def normalize_brightness(images_bytes: list[bytes], reference_bytes: bytes | Non
         target = sum(means) / len(means)
 
     results = []
-    for (rgb, fmt), mean in zip(decoded, means):
+    for (rgb, fmt), mean in zip(decoded, means, strict=True):
         adjusted = _shift_luminance(rgb, target - mean)
         output = io.BytesIO()
         Image.fromarray(adjusted).save(output, format=fmt)

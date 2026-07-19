@@ -23,7 +23,7 @@ async def strip_exif_endpoint(image: UploadFile = File(...)) -> StreamingRespons
     try:
         output_bytes = await asyncio.to_thread(strip_exif, input_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
 
 
@@ -33,7 +33,7 @@ async def extract_exif_endpoint(image: UploadFile = File(...)) -> dict[str, dict
     try:
         metadata = await asyncio.to_thread(extract_exif, input_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return {"metadata": metadata}
 
 
@@ -43,7 +43,7 @@ async def deskew_endpoint(image: UploadFile = File(...)) -> StreamingResponse:
     try:
         output_bytes = await asyncio.to_thread(deskew_image, input_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
 
 
@@ -53,7 +53,7 @@ async def denoise_endpoint(image: UploadFile = File(...), strength: int = Form(1
     try:
         output_bytes = await asyncio.to_thread(denoise_image, input_bytes, strength)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type=media_type_of(input_bytes))
 
 
@@ -69,5 +69,5 @@ async def contact_sheet_endpoint(
     try:
         sheet_bytes = await asyncio.to_thread(generate_contact_sheet, images_bytes, columns, thumb_size)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(sheet_bytes), media_type="image/jpeg")

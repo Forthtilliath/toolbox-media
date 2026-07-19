@@ -16,7 +16,7 @@ async def palette(image: UploadFile = File(...), num_colors: int = Form(5)) -> d
     try:
         colors = await asyncio.to_thread(extract_palette, input_bytes, num_colors)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return {"colors": colors}
 
 
@@ -27,5 +27,5 @@ async def compare(image_a: UploadFile = File(...), image_b: UploadFile = File(..
     try:
         data_uri, score = await asyncio.to_thread(compare_images, bytes_a, bytes_b)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return {"data_uri": data_uri, "similarity": score}

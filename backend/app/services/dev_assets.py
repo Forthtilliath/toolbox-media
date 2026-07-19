@@ -113,7 +113,7 @@ def generate_spritesheet(images_bytes: list[bytes], filenames: list[str]) -> tup
 
     css_rules = []
     x_offset = 0
-    for filename, img in zip(filenames, images):
+    for filename, img in zip(filenames, images, strict=True):
         sprite.paste(img, (x_offset, 0), img)
         css_rules.append(
             f".icon-{_slugify(filename)} {{ background-image: url('sprite.png'); "

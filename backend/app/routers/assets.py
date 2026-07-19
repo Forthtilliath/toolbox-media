@@ -27,7 +27,7 @@ async def favicon(image: UploadFile = File(...)) -> StreamingResponse:
     try:
         output_bytes = await asyncio.to_thread(generate_favicon_ico, input_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(io.BytesIO(output_bytes), media_type="image/x-icon")
 
 
@@ -37,7 +37,7 @@ async def icon_pack(image: UploadFile = File(...)) -> StreamingResponse:
     try:
         files = await asyncio.to_thread(generate_icon_pack, input_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return zip_response([name for name, _ in files], [data for _, data in files], "icon_pack.zip")
 
 
@@ -49,7 +49,7 @@ async def srcset(
     try:
         width_list = [int(w.strip()) for w in widths.split(",") if w.strip()]
     except ValueError:
-        raise HTTPException(status_code=400, detail="Largeurs invalides")
+        raise HTTPException(status_code=400, detail="Largeurs invalides") from None
     if not width_list:
         raise HTTPException(status_code=400, detail="Fournir au moins une largeur")
     if any(w < 1 for w in width_list):
@@ -57,7 +57,7 @@ async def srcset(
     try:
         files, srcset_attr = await asyncio.to_thread(generate_srcset, input_bytes, width_list)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     names = [name for name, _ in files] + ["srcset.txt"]
     contents = [data for _, data in files] + [srcset_attr.encode("utf-8")]
     return zip_response(names, contents, "srcset_images.zip")
@@ -69,7 +69,7 @@ async def lqip(image: UploadFile = File(...)) -> dict[str, str]:
     try:
         data_uri = await asyncio.to_thread(generate_lqip, input_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return {"data_uri": data_uri}
 
 
@@ -79,7 +79,7 @@ async def base64_encode(image: UploadFile = File(...)) -> dict[str, str]:
     try:
         data_uri = await asyncio.to_thread(encode_base64, input_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return {"data_uri": data_uri}
 
 
@@ -90,7 +90,7 @@ async def spritesheet(images: list[UploadFile] = File(...)) -> StreamingResponse
     try:
         sprite_png, css = await asyncio.to_thread(generate_spritesheet, images_bytes, filenames)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return zip_response(["sprite.png", "sprite.css"], [sprite_png, css.encode("utf-8")], "spritesheet.zip")
 
 
@@ -100,7 +100,7 @@ async def social_formats(image: UploadFile = File(...)) -> StreamingResponse:
     try:
         files = await asyncio.to_thread(generate_social_formats, input_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return zip_response([name for name, _ in files], [data for _, data in files], "social_formats.zip")
 
 
@@ -117,5 +117,5 @@ async def placeholder(
     try:
         image_bytes = await asyncio.to_thread(generate_placeholder, width, height, bg_color, text_color, text)
     except ValueError:
-        raise HTTPException(status_code=400, detail="Couleur invalide (format hexadécimal attendu)")
+        raise HTTPException(status_code=400, detail="Couleur invalide (format hexadécimal attendu)") from None
     return StreamingResponse(io.BytesIO(image_bytes), media_type="image/png")

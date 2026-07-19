@@ -34,7 +34,7 @@ async def images_to_pdf_endpoint(images: list[UploadFile] = File(...)) -> Stream
     try:
         output_bytes = await asyncio.to_thread(images_to_pdf, images_bytes)
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="Fichier image invalide")
+        raise HTTPException(status_code=400, detail="Fichier image invalide") from None
     return StreamingResponse(
         io.BytesIO(output_bytes),
         media_type="application/pdf",
@@ -48,7 +48,7 @@ async def pdf_to_images_endpoint(file: UploadFile = File(...), dpi: int = Form(1
     try:
         pages = await asyncio.to_thread(pdf_to_images, input_bytes, dpi)
     except Exception:
-        raise HTTPException(status_code=400, detail="Fichier PDF invalide")
+        raise HTTPException(status_code=400, detail="Fichier PDF invalide") from None
     if not pages:
         raise HTTPException(status_code=400, detail="Le PDF ne contient aucune page")
     filenames = [f"page-{i + 1:03d}.png" for i in range(len(pages))]
@@ -63,7 +63,7 @@ async def merge_pdf_endpoint(files: list[UploadFile] = File(...)) -> StreamingRe
     try:
         output_bytes = await asyncio.to_thread(merge_pdfs, pdfs_bytes)
     except Exception:
-        raise HTTPException(status_code=400, detail="Fichier PDF invalide")
+        raise HTTPException(status_code=400, detail="Fichier PDF invalide") from None
     return StreamingResponse(
         io.BytesIO(output_bytes),
         media_type="application/pdf",
@@ -77,7 +77,7 @@ async def compress_pdf_endpoint(file: UploadFile = File(...)) -> StreamingRespon
     try:
         output_bytes = await asyncio.to_thread(compress_pdf, input_bytes)
     except Exception:
-        raise HTTPException(status_code=400, detail="Fichier PDF invalide")
+        raise HTTPException(status_code=400, detail="Fichier PDF invalide") from None
     return StreamingResponse(
         io.BytesIO(output_bytes),
         media_type="application/pdf",
@@ -96,7 +96,7 @@ async def contrast_endpoint(color_a: str = Form(...), color_b: str = Form(...)) 
     try:
         return contrast_ratio(color_a, color_b)
     except ValueError:
-        raise HTTPException(status_code=400, detail="Couleur invalide (format hexadécimal attendu)")
+        raise HTTPException(status_code=400, detail="Couleur invalide (format hexadécimal attendu)") from None
 
 
 @router.post("/rename")
@@ -108,5 +108,5 @@ async def rename_endpoint(
     try:
         new_names = await asyncio.to_thread(rename_batch, original_names, pattern, start)
     except (KeyError, ValueError) as e:
-        raise HTTPException(status_code=400, detail=f"Pattern invalide: {e}")
+        raise HTTPException(status_code=400, detail=f"Pattern invalide: {e}") from e
     return zip_response(new_names, contents, "renamed_files.zip")

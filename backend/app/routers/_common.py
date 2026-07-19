@@ -30,7 +30,7 @@ def _safe_zip_entry_name(filename: str) -> str:
 def zip_response(filenames: list[str], contents: list[bytes], download_name: str) -> StreamingResponse:
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        for filename, data in zip(filenames, contents):
+        for filename, data in zip(filenames, contents, strict=True):
             zip_file.writestr(_safe_zip_entry_name(filename), data)
     zip_buffer.seek(0)
     return StreamingResponse(
