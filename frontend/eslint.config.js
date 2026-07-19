@@ -7,10 +7,19 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   {
-    // *.d.ts here isn't hand-written source — tsconfig.node.json's composite
-    // build emits one alongside vite.config.ts/playwright.config.ts/e2e/**
-    // (already gitignored) purely as a build byproduct.
-    ignores: ['dist', 'playwright-report', 'test-results', 'blob-report', '**/*.d.ts'],
+    // *.d.ts/*.js here aren't hand-written source — tsconfig.node.json's
+    // composite build emits them alongside vite.config.ts/playwright.config.ts/
+    // e2e/** (already gitignored) purely as a build byproduct.
+    ignores: [
+      'dist',
+      'playwright-report',
+      'test-results',
+      'blob-report',
+      '**/*.d.ts',
+      'vite.config.js',
+      'playwright.config.js',
+      'e2e/*.js',
+    ],
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended, jsxA11y.flatConfigs.recommended],
