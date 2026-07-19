@@ -10,6 +10,10 @@ __pycache__/
 *.tsbuildinfo
 frontend/vite.config.js
 frontend/vite.config.d.ts
+frontend/playwright.config.js
+frontend/playwright.config.d.ts
+frontend/e2e/*.js
+frontend/e2e/*.d.ts
 .pytest_cache/
 coverage/
 frontend/test-results/

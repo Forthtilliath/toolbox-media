@@ -11,7 +11,13 @@ export default function ResultPanel({ blob, filename, previewType = 'none' }: Re
   const [url, setUrl] = useState<string | null>(null)
 
   useEffect(() => {
+    // Syncs React state with the browser's object-URL lifecycle (create on a
+    // new blob, revoke on the way out) — an external resource, not a value
+    // merely derived from props, so this is the case react-hooks's
+    // set-state-in-effect rule itself carves out ("subscribe to an external
+    // system, calling setState when it changes").
     if (!blob) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUrl(null)
       return
     }
@@ -25,7 +31,14 @@ export default function ResultPanel({ blob, filename, previewType = 'none' }: Re
   return (
     <div className="mt-6 flex flex-col items-start gap-3">
       {previewType === 'image' && <img src={url} alt="Résultat" className="max-w-full rounded-lg border" />}
-      {previewType === 'video' && <video src={url} controls className="max-w-full rounded-lg border" />}
+      {previewType === 'video' && (
+        // No caption track: this previews a file the tool just generated
+        // (converted/trimmed/etc.), not authored content — there's no
+        // caption source that could exist for it.
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <video src={url} controls className="max-w-full rounded-lg border" />
+      )}
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption -- see the video case above */}
       {previewType === 'audio' && <audio src={url} controls />}
       <Button
         onClick={() => {

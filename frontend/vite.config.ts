@@ -1,3 +1,7 @@
+// This is Vitest's own documented way to merge its `test` option types into
+// vite's `defineConfig` — there's no import-based equivalent for ambient
+// type augmentation.
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
